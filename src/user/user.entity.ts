@@ -8,6 +8,7 @@ type UserProps = {
   name: string;
   isAtendent: boolean;
   permission: string;
+  profileImg: string;
 };
 
 export class UserEntity extends BaseEntity<UserProps> {
@@ -41,5 +42,9 @@ export class UserEntity extends BaseEntity<UserProps> {
 
   get permission(): string {
     return this.props.permission;
+  }
+
+  get profileImg(): string {
+    return this.props.profileImg;
   }
 }

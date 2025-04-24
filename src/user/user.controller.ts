@@ -50,6 +50,7 @@ export class UserController {
     signupData: {
       login: string;
       password: string;
+      name: string;
       isAtendent: boolean;
       permission: 'user';
     },

@@ -17,12 +17,14 @@ export class UserSignupUseCase {
   async execute({
     login,
     password,
+    name,
     isAtendent,
     permission,
   }: {
     login: string;
     password: string;
     isAtendent: boolean;
+    name: string;
     permission: string;
   }): Promise<UserSignupUseCaseResponse> {
     const user = await this.userRepository.findByParam<{ login: string }>({
@@ -36,6 +38,7 @@ export class UserSignupUseCase {
       password: passwordHash,
       isAtendent: isAtendent,
       permission: permission,
+      name: name,
     });
 
     const newUser = await this.userRepository.findById(idNewUser.id);
