@@ -1,8 +1,8 @@
 import { Either, left, right } from 'src/core/Either';
-import { UserRepository } from '../database/user.repository';
 import { InvalidLoginError } from '../errors/InvalidLogin';
 import { EncrypterGateway } from 'src/infra/auth/cryptography/encrypter.interface';
 import { UserEntity } from '../user.entity';
+import { IUserRepository } from '../database/user.repository.interface';
 
 type UserLoginUseCaseResponse = Either<
   InvalidLoginError,
@@ -10,7 +10,7 @@ type UserLoginUseCaseResponse = Either<
 >;
 export class UserLoginUseCase {
   constructor(
-    private userRepository: UserRepository,
+    private userRepository: IUserRepository,
     private encrypterGateway: EncrypterGateway,
   ) {}
 

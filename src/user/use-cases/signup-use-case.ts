@@ -1,8 +1,8 @@
 import { Either, left, right } from 'src/core/Either';
-import { UserRepository } from '../database/user.repository';
 import { EncrypterGateway } from 'src/infra/auth/cryptography/encrypter.interface';
 import { UserEntity } from '../user.entity';
 import { LoginAlreadyExists } from '../errors/LoginAlreadyExists';
+import { IUserRepository } from '../database/user.repository.interface';
 
 type UserSignupUseCaseResponse = Either<
   LoginAlreadyExists,
@@ -10,7 +10,7 @@ type UserSignupUseCaseResponse = Either<
 >;
 export class UserSignupUseCase {
   constructor(
-    private userRepository: UserRepository,
+    private userRepository: IUserRepository,
     private encrypterGateway: EncrypterGateway,
   ) {}
 
@@ -39,16 +39,18 @@ export class UserSignupUseCase {
       isAtendent: isAtendent,
       permission: permission,
       name: name,
+      isVerified: false,
     });
 
     const newUser = await this.userRepository.findById(idNewUser.id);
-    //procurar perfil da atendente, caso tenha retornar no token
+
     return right({
       token: this.encrypterGateway.encryptToken({
         id: newUser.id,
         name: newUser.name,
         isAtendent: newUser.isAtendent,
         permission: newUser.permission,
+        isVerified: false,
       }),
       user: newUser,
     });

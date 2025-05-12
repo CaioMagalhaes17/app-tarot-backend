@@ -9,6 +9,7 @@ type UserProps = {
   isAtendent: boolean;
   permission: string;
   profileImg: string;
+  isVerified: boolean;
 };
 
 export class UserEntity extends BaseEntity<UserProps> {
@@ -46,5 +47,9 @@ export class UserEntity extends BaseEntity<UserProps> {
 
   get profileImg(): string {
     return this.props.profileImg;
+  }
+
+  get isVerified(): boolean {
+    return this.props.isVerified;
   }
 }

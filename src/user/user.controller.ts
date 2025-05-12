@@ -3,12 +3,16 @@ import { UserLoginUseCase } from './use-cases/login-use-case';
 import { UserSignupUseCase } from './use-cases/signup-use-case';
 import { LoginAlreadyExists } from './errors/LoginAlreadyExists';
 import { InvalidLoginError } from './errors/InvalidLogin';
+import { SendEmailVerificationUseCase } from './use-cases/send-email-verification-use-case';
+import { VerifyTokenUseCase } from './use-cases/verify-token-use-case';
 
 @Controller()
 export class UserController {
   constructor(
     private userLogin: UserLoginUseCase,
     private userSignup: UserSignupUseCase,
+    private sendEmailVerificationUseCase: SendEmailVerificationUseCase,
+    private verifyTokenUseCase: VerifyTokenUseCase,
   ) {}
 
   @Post('/user/login')
@@ -36,6 +40,7 @@ export class UserController {
     const userInfos = {
       id: user.id,
       name: user.name,
+      isVerified: user.isVerified,
     };
 
     return {
@@ -71,11 +76,35 @@ export class UserController {
     const userInfos = {
       id: user.id,
       name: user.name,
+      isVerified: user.isVerified,
     };
 
     return {
       token,
       userInfos,
     };
+  }
+
+  @Post('/user/sendVerifyEmail')
+  async sendEmail(
+    @Body()
+    body: {
+      name: string;
+      email: string;
+    },
+  ) {
+    await this.sendEmailVerificationUseCase.execute(body.name, body.email);
+  }
+
+  @Post('/user/verifyEmail')
+  async verifyEmail(
+    @Body()
+    body: {
+      token: string;
+    },
+  ) {
+    const response = await this.verifyTokenUseCase.execute(body.token);
+    console.log(response);
+    return response;
   }
 }
