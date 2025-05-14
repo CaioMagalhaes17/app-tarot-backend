@@ -14,6 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { VerifyTokenUseCase } from './use-cases/verify-token-use-case';
 import { IUserRepository } from './database/user.repository.interface';
+import { GetUserUseCase } from './use-cases/get-user-use-case';
 
 @Module({
   imports: [
@@ -25,6 +26,13 @@ import { IUserRepository } from './database/user.repository.interface';
   ],
   controllers: [UserController],
   providers: [
+    {
+      provide: GetUserUseCase,
+      useFactory: (userRepository: IUserRepository) => {
+        return new GetUserUseCase(userRepository);
+      },
+      inject: [UserRepository],
+    },
     {
       provide: UserLoginUseCase,
       useFactory: (

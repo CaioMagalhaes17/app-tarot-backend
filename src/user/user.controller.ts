@@ -1,10 +1,24 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { UserLoginUseCase } from './use-cases/login-use-case';
 import { UserSignupUseCase } from './use-cases/signup-use-case';
 import { LoginAlreadyExists } from './errors/LoginAlreadyExists';
 import { InvalidLoginError } from './errors/InvalidLogin';
 import { SendEmailVerificationUseCase } from './use-cases/send-email-verification-use-case';
 import { VerifyTokenUseCase } from './use-cases/verify-token-use-case';
+import { JwtAuthGuard } from 'src/infra/auth/guards/jwt.guard';
+import { GetUserUseCase } from './use-cases/get-user-use-case';
+import { UserNotFound } from './errors/UserNotFound';
+import { UserPresenter } from './user.presenter';
 
 @Controller()
 export class UserController {
@@ -13,6 +27,7 @@ export class UserController {
     private userSignup: UserSignupUseCase,
     private sendEmailVerificationUseCase: SendEmailVerificationUseCase,
     private verifyTokenUseCase: VerifyTokenUseCase,
+    private getUserUseCase: GetUserUseCase,
   ) {}
 
   @Post('/user/login')
@@ -96,15 +111,24 @@ export class UserController {
     await this.sendEmailVerificationUseCase.execute(body.name, body.email);
   }
 
-  @Post('/user/verifyEmail')
-  async verifyEmail(
-    @Body()
-    body: {
-      token: string;
-    },
-  ) {
-    const response = await this.verifyTokenUseCase.execute(body.token);
-    console.log(response);
+  @Get('/user/verifyEmail/:token')
+  async verifyEmail(@Param('token') token: string) {
+    const response = await this.verifyTokenUseCase.execute(token);
     return response;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/user')
+  async getUser(@Req() req: { user: { id: string } }) {
+    const response = await this.getUserUseCase.execute(req.user.id);
+    if (response.isLeft()) {
+      switch (response.value.constructor) {
+        case UserNotFound:
+          throw new NotFoundException(response.value.message);
+        default:
+          throw new BadRequestException('Erro não tratado');
+      }
+    }
+    return UserPresenter.toHttp(response.value);
   }
 }
