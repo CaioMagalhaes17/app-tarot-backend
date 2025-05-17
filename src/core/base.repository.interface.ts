@@ -13,4 +13,5 @@ export interface BaseDomainRepository<DomainModel> {
     paginateObj?: { page: number; limit: number },
   ): Promise<DomainModel[]>;
   search(field: string, query: string): Promise<DomainModel[]>;
+  findAllPaginated<T>(page: number, limit: number, param?: T);
 }

@@ -1,12 +1,13 @@
-import { User } from './user.schema';
-import { UserEntity } from '../user.entity';
 import { BaseMapperInterface } from 'src/core/base.mapper.interface';
+import { Services } from './services.schema';
+import { ServicesEntity } from '../services.entity';
 
-export class UserMapper implements BaseMapperInterface<User, UserEntity> {
-  toDomain(row: User): UserEntity {
+export class ServicesMapper
+  implements BaseMapperInterface<Services, ServicesEntity> {
+  toDomain(row: Services): ServicesEntity {
     if (!row) return;
     const { _id, ...rest } = row.toObject();
-    return UserEntity.create(
+    return ServicesEntity.create(
       {
         ...rest,
       },
@@ -14,7 +15,7 @@ export class UserMapper implements BaseMapperInterface<User, UserEntity> {
     );
   }
 
-  toDomainArray(rows: User[]): UserEntity[] {
+  toDomainArray(rows: Services[]): ServicesEntity[] {
     if (!rows || rows.length === 0) return [];
     return rows
       .map((row) => this.toDomain(row))

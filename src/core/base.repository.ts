@@ -1,13 +1,13 @@
 /* eslint-disable prettier/prettier */
 import { Model } from "mongoose"
-import { BaseMapper } from "./base.mapper"
+import { BaseMapperInterface } from "./base.mapper.interface"
 import { BaseDomainRepository } from "./base.repository.interface"
 
 export abstract class BaseInfraRepository<InfraModel, DomainModel>
   implements BaseDomainRepository<DomainModel> {
   constructor(
     protected readonly model: Model<InfraModel>,
-    protected readonly mapper: BaseMapper<InfraModel, DomainModel>,
+    protected readonly mapper: BaseMapperInterface<InfraModel, DomainModel>,
   ) {}
 
   async create(data: Partial<DomainModel>): Promise<{ id: string }> {
