@@ -1,0 +1,29 @@
+[{
+  "_id": {
+    "$oid": "6827bb3292efb55200a5b4bd"
+  },
+  "name": "Pergunta completa",
+  "description": "Faça uma leitura detalhada, dê o máximo de detalhes possível, aceita envio de imagens",
+  "serviceImg": "..."
+},
+{
+  "_id": {
+    "$oid": "68290cf1e2cb04bb156479cc"
+  },
+  "description": "Converse com o consultor por troca de mensagens",
+  "name": "Chat"
+},
+{
+  "_id": {
+    "$oid": "68290d1ee2cb04bb156479cd"
+  },
+  "description": "Converse com o consultor por ligação",
+  "name": "Ligação"
+},
+{
+  "_id": {
+    "$oid": "68290d4be2cb04bb156479ce"
+  },
+  "description:": "Faça uma pergunta direta, escolha um tópico e escreva sua pergunta.",
+  "name": "Pergunta simples"
+}]
