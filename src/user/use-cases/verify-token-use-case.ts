@@ -13,7 +13,8 @@ export class VerifyTokenUseCase {
       login: decoded.email,
     });
     if (user.length === 1) {
-      await this.userRepository.updateById(user[0].id, { isVerified: true });
+      user[0].update({ isVerified: true });
+      await this.userRepository.updateById(user[0].id.toString(), user[0]);
     }
 
     return { name: decoded.name, email: decoded.email }; // Retorna o ID do usuário

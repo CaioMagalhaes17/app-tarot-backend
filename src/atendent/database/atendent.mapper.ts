@@ -10,6 +10,8 @@ export class AtendentMapper
     return AtendentEntity.create(
       {
         ...rest,
+        user: row.userId,
+        userId: row.userId._id,
       },
       _id,
     );

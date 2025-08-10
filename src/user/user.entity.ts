@@ -1,8 +1,9 @@
 import { BaseEntity } from 'src/core/base.entity';
+import { UniqueEntityID } from 'src/core/unique-entity-id';
 
 type UserProps = {
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   login: string;
   password: string;
   name: string;
@@ -13,15 +14,15 @@ type UserProps = {
 };
 
 export class UserEntity extends BaseEntity<UserProps> {
-  static create(props: UserProps, id: string) {
-    return new UserEntity(props, id);
+  static create(props: UserProps, id?: string) {
+    return new UserEntity(props, new UniqueEntityID(id));
   }
 
-  get createdAt(): string {
+  get createdAt() {
     return this.props.createdAt;
   }
 
-  get updatedAt(): string {
+  get updatedAt() {
     return this.props.updatedAt;
   }
 
@@ -51,5 +52,23 @@ export class UserEntity extends BaseEntity<UserProps> {
 
   get isVerified(): boolean {
     return this.props.isVerified;
+  }
+
+  update(data: Partial<UserEntity>) {
+    if (data.isVerified) {
+      this.props.isVerified = data.isVerified;
+    }
+    if (data.name) {
+      this.props.name = data.name;
+    }
+
+    if (data.password) {
+      this.props.password = data.password;
+    }
+    this.touch();
+  }
+
+  touch() {
+    this.props.updatedAt = new Date();
   }
 }

@@ -14,4 +14,23 @@ export class AtendentRepository extends BaseInfraRepository<
   ) {
     super(model, mapper);
   }
+
+  async findAll(): Promise<AtendentEntity[]> {
+    return this.mapper.toDomainArray(await this.model.find().exec());
+  }
+
+  async findAllPaginated<T = unknown>(page: number, limit: number, param?: T) {
+    const skip = (page - 1) * limit;
+    const [data, total] = await Promise.all([
+      this.model.find(param).skip(skip).limit(limit).populate('userId').exec(),
+      this.model.countDocuments().exec(),
+    ]);
+
+    return {
+      data: this.mapper.toDomainArray(data),
+      total,
+      page,
+      pages: Math.ceil(total / limit),
+    };
+  }
 }

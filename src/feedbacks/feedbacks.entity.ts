@@ -1,4 +1,5 @@
 import { BaseEntity } from 'src/core/base.entity';
+import { UniqueEntityID } from 'src/core/unique-entity-id';
 
 type FeedbacksProps = {
   senderId: string;
@@ -10,7 +11,7 @@ type FeedbacksProps = {
 
 export class FeedbacksEntity extends BaseEntity<FeedbacksProps> {
   static create(props: FeedbacksProps, id: string) {
-    return new FeedbacksEntity(props, id);
+    return new FeedbacksEntity(props, new UniqueEntityID(id));
   }
 
   get senderId(): string {

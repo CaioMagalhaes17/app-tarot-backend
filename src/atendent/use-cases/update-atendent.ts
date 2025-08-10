@@ -3,7 +3,7 @@ import { IAtendentRepository } from '../database/atendent.repository.interface';
 import { AtendentNotFound } from '../errors/AtendentNotFound';
 import { AtendentEntity } from '../atendent.entity';
 
-type UpdateAtendentUseCaseResponse = Either<AtendentNotFound, { id: string }>;
+type UpdateAtendentUseCaseResponse = Either<AtendentNotFound, null>;
 export class UpdateAtendentUseCase {
   constructor(private atendentRepository: IAtendentRepository) {}
 
@@ -14,11 +14,12 @@ export class UpdateAtendentUseCase {
     const atendent = await this.atendentRepository.findByParam<{
       userId: string;
     }>({ userId });
-    if (!atendent) return left(new AtendentNotFound());
-    const result = await this.atendentRepository.updateById(
-      atendent[0].id,
-      data,
+    if (!atendent || atendent.length === 0) return left(new AtendentNotFound());
+    atendent[0].update(data);
+    await this.atendentRepository.updateById(
+      atendent[0].id.toString(),
+      atendent[0],
     );
-    return right(result);
+    return right(null);
   }
 }

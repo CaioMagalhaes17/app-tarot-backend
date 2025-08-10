@@ -1,4 +1,5 @@
 import { BaseEntity } from 'src/core/base.entity';
+import { UniqueEntityID } from 'src/core/unique-entity-id';
 
 type SpecialitiesProps = {
   topicId: string;
@@ -6,8 +7,8 @@ type SpecialitiesProps = {
 };
 
 export class SpecialitiesEntity extends BaseEntity<SpecialitiesProps> {
-  static create(props: SpecialitiesProps, id: string) {
-    return new SpecialitiesEntity(props, id);
+  static create(props: SpecialitiesProps, id?: string) {
+    return new SpecialitiesEntity(props, new UniqueEntityID(id));
   }
 
   get name(): string {

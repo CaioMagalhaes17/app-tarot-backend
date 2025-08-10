@@ -18,7 +18,7 @@ export abstract class BaseInfraRepository<InfraModel, DomainModel>
     return this.mapper.toDomainArray(await this.model.find().exec())
   }
 
-  async findById(id: string): Promise<DomainModel> {
+  async findById(id: string): Promise<DomainModel | null> {
     return this.mapper.toDomain(await this.model.findById(id).exec())
   }
 
@@ -46,7 +46,7 @@ export abstract class BaseInfraRepository<InfraModel, DomainModel>
   async findByParam<ParamType>(param: ParamType, paginateObj?: { page: number, limit: number }) {
     if (paginateObj) {
       const items = await this.findAllPaginated<ParamType>(paginateObj.page, paginateObj.limit, param)
-      return this.mapper.toDomainArray(items.data)
+      return items.data
     }
     return this.mapper.toDomainArray(await this.model.find(param).exec())
   }
@@ -60,7 +60,7 @@ export abstract class BaseInfraRepository<InfraModel, DomainModel>
     ])
 
     return {
-      data,
+      data: this.mapper.toDomainArray(data),
       total,
       page,
       pages: Math.ceil(total / limit),

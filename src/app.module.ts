@@ -8,6 +8,7 @@ import { ServicesModule } from './services/services.module';
 import { AtendentModule } from './atendent/atendent.module';
 import { SpecialitiesModule } from './specialities/specialities.module';
 import { FeedbacksModule } from './feedbacks/feedbacks.module';
+import { ClientMinutesModule } from './client-minutes/client-minutes.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { FeedbacksModule } from './feedbacks/feedbacks.module';
     AtendentModule,
     SpecialitiesModule,
     FeedbacksModule,
+    ClientMinutesModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
