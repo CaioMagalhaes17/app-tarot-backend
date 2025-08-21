@@ -1,4 +1,4 @@
-import { InMemoryUserRepository } from 'src/user/in-memory-user.repository';
+import { InMemoryUserRepository } from 'src/user/tests/in-memory-user.repository';
 import { InMemoryClientMinutesRepository } from './in-memory-client-minutes.repository';
 import { AddPurchaseMinutesUseCase } from '../use-cases/add-purchase-minutes';
 import { UserNotFound } from 'src/user/errors/UserNotFound';

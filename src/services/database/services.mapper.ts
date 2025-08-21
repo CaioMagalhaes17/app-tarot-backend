@@ -21,4 +21,10 @@ export class ServicesMapper
       .map((row) => this.toDomain(row))
       .filter((item) => item !== null);
   }
+
+  toPersistance(domain: ServicesEntity): Record<string, any> {
+    return {
+      toBeImplemented: '',
+    };
+  }
 }

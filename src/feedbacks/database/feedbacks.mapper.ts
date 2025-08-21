@@ -21,4 +21,10 @@ export class FeedbacksMapper
       .map((row) => this.toDomain(row))
       .filter((item) => item !== null);
   }
+
+  toPersistance(domain: FeedbacksEntity): Record<string, any> {
+    return {
+      toBeImplemented: '',
+    };
+  }
 }

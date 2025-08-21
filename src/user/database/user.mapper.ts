@@ -20,4 +20,18 @@ export class UserMapper implements BaseMapperInterface<User, UserEntity> {
       .map((row) => this.toDomain(row))
       .filter((item) => item !== null);
   }
+
+  toPersistance(domain: UserEntity): Record<string, any> {
+    return {
+      createdAt: domain.createdAt,
+      updatedAt: domain.updatedAt,
+      login: domain.login,
+      password: domain.password,
+      name: domain.name,
+      isAtendent: domain.isAtendent,
+      permission: domain.permission,
+      profileImg: domain.profileImg,
+      isVerified: domain.isVerified,
+    };
+  }
 }

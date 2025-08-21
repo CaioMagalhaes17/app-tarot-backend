@@ -31,7 +31,7 @@ export abstract class BaseInfraRepository<InfraModel, DomainModel>
     id: string,
     updateData: DomainModel,
   ): Promise<DomainModel> {
-    await this.model.findByIdAndUpdate(id, updateData)
+    await this.model.findByIdAndUpdate(id, this.mapper.toPersistance(updateData))
     return this.mapper.toDomain(await this.model.findById(id).exec())
   }
 

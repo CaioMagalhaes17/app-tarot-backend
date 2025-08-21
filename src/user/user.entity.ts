@@ -1,7 +1,7 @@
 import { BaseEntity } from 'src/core/base.entity';
 import { UniqueEntityID } from 'src/core/unique-entity-id';
 
-type UserProps = {
+export type UserProps = {
   createdAt?: Date;
   updatedAt?: Date;
   login: string;

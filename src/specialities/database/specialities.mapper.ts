@@ -21,4 +21,10 @@ export class SpecialitiesMapper
       .map((row) => this.toDomain(row))
       .filter((item) => item !== null);
   }
+
+  toPersistance(domain: SpecialitiesEntity): Record<string, any> {
+    return {
+      toBeImplemented: '',
+    };
+  }
 }

@@ -23,4 +23,10 @@ export class AtendentMapper
       .map((row) => this.toDomain(row))
       .filter((item) => item !== null);
   }
+
+  toPersistance(domain: AtendentEntity): Record<string, any> {
+    return {
+      toBeImplemented: '',
+    };
+  }
 }

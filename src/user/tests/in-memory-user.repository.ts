@@ -1,5 +1,5 @@
-import { IUserRepository } from './database/user.repository.interface';
-import { UserEntity } from './user.entity';
+import { IUserRepository } from '../database/user.repository.interface';
+import { UserEntity } from '../user.entity';
 
 export class InMemoryUserRepository implements IUserRepository {
   user: UserEntity[] = [];
