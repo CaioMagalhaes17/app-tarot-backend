@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { BaseFrontendUrlFactory } from './infra/base-frontend-url.factory';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,6 +14,14 @@ async function bootstrap() {
     credentials: true, // Permitir cookies ou headers com credenciais
   });
 
-  await app.listen(3000);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // remove campos não listados no DTO
+      forbidNonWhitelisted: true, // lança erro se enviar campo a mais
+      transform: true, // transforma payload em instância do DTO
+    }),
+  );
+
+  await app.listen(3000, '0.0.0.0');
 }
 bootstrap();

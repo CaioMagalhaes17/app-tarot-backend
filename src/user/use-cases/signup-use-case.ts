@@ -46,7 +46,7 @@ export class UserSignupUseCase {
 
     return right({
       token: this.encrypterGateway.encryptToken({
-        id: newUser.id,
+        id: newUser.id.toString(),
         name: newUser.name,
         isAtendent: newUser.isAtendent,
         permission: newUser.permission,

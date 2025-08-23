@@ -9,6 +9,8 @@ import { AtendentModule } from './atendent/atendent.module';
 import { SpecialitiesModule } from './specialities/specialities.module';
 import { FeedbacksModule } from './feedbacks/feedbacks.module';
 import { ClientMinutesModule } from './client-minutes/client-minutes.module';
+import { PaymentOrderModule } from './payment/payment-order.module';
+import { WebhooksModule } from './webhooks/webhooks.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { ClientMinutesModule } from './client-minutes/client-minutes.module';
     SpecialitiesModule,
     FeedbacksModule,
     ClientMinutesModule,
+    PaymentOrderModule,
+    WebhooksModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),

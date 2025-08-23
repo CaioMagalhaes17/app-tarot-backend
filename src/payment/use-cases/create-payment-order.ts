@@ -15,13 +15,11 @@ export class CreatePaymentOrderUseCase {
   async execute({
     amount,
     description,
-    paymentMethod,
     userId,
   }: {
     userId: string;
     amount: number;
     description: string;
-    paymentMethod: string;
   }): Promise<
     Either<Error | UserNotFound, { id: string; externalId: string }>
   > {
@@ -42,7 +40,6 @@ export class CreatePaymentOrderUseCase {
       status: gatewayResponse.value.status,
       type: 'payment',
       description,
-      paymentMethod,
       user,
       externalId: gatewayResponse.value.externalId,
     });

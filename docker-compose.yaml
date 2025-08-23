@@ -6,8 +6,26 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     container_name: tarot-backend
+    environment:
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+    depends_on:
+      - stripe-cli
     ports:
       - "3000:3000"
     volumes:
       - .:/usr/src/app  # Mapeia a pasta local para dentro do container
-      - /usr/src/app/node_modules  # Evita sobrescrever a pasta node_modules    
+      - /usr/src/app/node_modules  # Evita sobrescrever a pasta node_modules
+    networks:
+      - app_network
+  stripe-cli:
+    image: stripe/stripe-cli:latest
+    command: >
+      listen --forward-to http://tarot-backend:3000/webhooks/stripe
+    environment:
+      - STRIPE_API_KEY=${STRIPE_SECRET_KEY}
+    networks:
+      - app_network
+networks:
+  app_network:
+    driver: bridge
+    

@@ -32,7 +32,7 @@ export class UserLoginUseCase {
     //procurar perfil da atendente, caso tenha retornar no token
     return right({
       token: this.encrypterGateway.encryptToken({
-        id: user[0].id,
+        id: user[0].id.toValue(),
         name: user[0].name,
         isAtendent: user[0].isAtendent,
         permission: user[0].permission,

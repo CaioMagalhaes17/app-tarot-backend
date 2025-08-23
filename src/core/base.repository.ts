@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Model } from "mongoose"
+import { Model, Types } from "mongoose"
 import { BaseMapperInterface } from "./base.mapper.interface"
 import { BaseDomainRepository } from "./base.repository.interface"
 
@@ -19,7 +19,7 @@ export abstract class BaseInfraRepository<InfraModel, DomainModel>
   }
 
   async findById(id: string): Promise<DomainModel | null> {
-    return this.mapper.toDomain(await this.model.findById(id).exec())
+    return this.mapper.toDomain(await this.model.findById(new Types.ObjectId(id)).exec())
   }
 
   async search(field: any, query: string): Promise<DomainModel[]> {
