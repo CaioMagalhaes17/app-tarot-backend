@@ -52,6 +52,6 @@ export class PaymentOrderRepository
   async create(data: PaymentOrderEntity): Promise<{ id: string }> {
     const dataToInsert = this.mapper.toPersistance(data);
     const result = await this.model.create(dataToInsert);
-    return result.id;
+    return { id: result.id };
   }
 }

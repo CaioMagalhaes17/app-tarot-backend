@@ -60,14 +60,13 @@ export class ClientMinutesRepository extends BaseInfraRepository<
 
   async create(data: ClientMinutesEntity): Promise<{ id: string }> {
     const existing = await this.model
-      .find({
+      .findOne({
         userId: data.user.id.toString(),
       })
       .populate('userId')
       .exec();
     if (existing) {
-      console.log('niggers');
-      return;
+      return { id: existing.id };
     }
     return {
       id: (await this.model.create(this.mapper.toPersistance(data))).id,

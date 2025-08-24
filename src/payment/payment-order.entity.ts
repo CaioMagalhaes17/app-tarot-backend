@@ -3,6 +3,7 @@ import { UniqueEntityID } from 'src/core/unique-entity-id';
 import { UserEntity } from 'src/user/user.entity';
 
 export type OrderType = 'payment' | 'withdrawal';
+export type ProductType = 'minutes';
 export type OrderStatus =
   | 'pending'
   | 'processing'
@@ -16,6 +17,7 @@ export interface PaymentOrderEntityProps {
   amount: number;
   status: OrderStatus;
   createdAt: Date;
+  productType: ProductType;
   updatedAt?: Date;
   description?: string;
   errorDescription?: string;
@@ -31,6 +33,10 @@ export class PaymentOrderEntity extends BaseEntity<PaymentOrderEntityProps> {
 
   get user() {
     return this.props.user;
+  }
+
+  get productType() {
+    return this.props.productType;
   }
 
   get type() {

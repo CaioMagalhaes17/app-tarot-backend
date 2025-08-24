@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsNumber, IsString, MinLength } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { ProductType } from '../payment-order.entity';
 
 export class CreatePaymentIntentDto {
   @IsString()
@@ -6,6 +7,10 @@ export class CreatePaymentIntentDto {
   description: string;
 
   @IsNumber()
-  @MinLength(1)
+  @IsNotEmpty()
   amount: number;
+
+  @IsString()
+  @IsNotEmpty()
+  productType: ProductType;
 }

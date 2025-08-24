@@ -11,8 +11,8 @@ export function makePaymentOrder(
   const data: PaymentOrderEntityProps = {
     amount: 10,
     description: 'Compra de minutos',
-    paymentMethod: 'PIX',
     user: makeUser(),
+    productType: 'minutes',
     createdAt: new Date(),
     status: 'pending',
     type: 'payment',

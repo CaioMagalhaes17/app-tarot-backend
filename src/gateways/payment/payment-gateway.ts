@@ -6,6 +6,7 @@ export interface PaymentOrder {
   amount: number;
   status: 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
   createdAt: Date;
+  clientSecret: string;
 }
 
 export abstract class PaymentGateway {

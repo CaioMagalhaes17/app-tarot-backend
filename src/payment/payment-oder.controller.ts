@@ -34,6 +34,7 @@ export class PaymentOrderController {
       amount: paymentPayload.amount,
       description: paymentPayload.description,
       userId: req.user.id,
+      productType: paymentPayload.productType,
     });
 
     if (response.isLeft()) {
@@ -46,6 +47,8 @@ export class PaymentOrderController {
           throw new BadRequestException('Erro não tratado');
       }
     }
+
+    return response.value;
   }
 
   @UseGuards(JwtAuthGuard)

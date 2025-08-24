@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { User } from 'src/user/database/user.schema';
+import { MinutesTransaction } from '../client-minutes.entity';
+import { PaymentOrder } from 'src/payment/database/payment-order.schema';
 
 @Schema({ timestamps: true })
 export class ClientMinutes extends Document {
@@ -24,16 +26,21 @@ export class ClientMinutes extends Document {
         minutes: { type: Number, required: true },
         date: { type: Date, default: Date.now },
         description: { type: String },
+        status: {
+          type: String,
+          enum: ['pending', 'completed', 'failed'],
+          required: true,
+        },
+        paymentOrder: {
+          type: Types.ObjectId,
+          ref: PaymentOrder.name,
+          required: true,
+        },
       },
     ],
     default: [],
   })
-  transactions: {
-    type: string; // purchase, usage, refund, bonus
-    minutes: number;
-    date: Date;
-    description?: string;
-  }[];
+  transactions: MinutesTransaction[];
 }
 
 export const ClientMinutesSchema = SchemaFactory.createForClass(ClientMinutes);

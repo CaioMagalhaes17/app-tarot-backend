@@ -7,10 +7,18 @@ import { ClientMinutesDatabaseModule } from './database/client-minutes.module';
 import { UserDatabaseModule } from 'src/user/database/user.database.module';
 import { IUserRepository } from 'src/user/database/user.repository.interface';
 import { UserRepository } from 'src/user/database/user.repository';
-import { AddPurchaseMinutesUseCase } from './use-cases/add-purchase-minutes';
+import { CreateMinutesTransaction } from './use-cases/create-minutes-transaction';
+import { IPaymentOrderRepository } from 'src/payment/database/payment-order.repository.interface';
+import { PaymentOrderRepository } from 'src/payment/database/payment-order.repository';
+import { PaymentOrderDatabaseModule } from 'src/payment/database/payment-oder.module';
+import { UpdateMinutesTransactionUseCase } from './use-cases/update-minutes-transaction';
 
 @Module({
-  imports: [ClientMinutesDatabaseModule, UserDatabaseModule],
+  imports: [
+    ClientMinutesDatabaseModule,
+    UserDatabaseModule,
+    PaymentOrderDatabaseModule,
+  ],
   controllers: [ClientMinutesController],
   providers: [
     {
@@ -24,17 +32,34 @@ import { AddPurchaseMinutesUseCase } from './use-cases/add-purchase-minutes';
       inject: [ClientMinutesRepository, UserRepository],
     },
     {
-      provide: AddPurchaseMinutesUseCase,
+      provide: UpdateMinutesTransactionUseCase,
       useFactory: (
         clientMinutesRepository: IClientMinutesRepository,
+        paymentOrderRepository: IPaymentOrderRepository,
         userRepository: IUserRepository,
       ) => {
-        return new AddPurchaseMinutesUseCase(
+        return new UpdateMinutesTransactionUseCase(
           clientMinutesRepository,
+          paymentOrderRepository,
           userRepository,
         );
       },
-      inject: [ClientMinutesRepository, UserRepository],
+      inject: [ClientMinutesRepository, PaymentOrderRepository, UserRepository],
+    },
+    {
+      provide: CreateMinutesTransaction,
+      useFactory: (
+        clientMinutesRepository: IClientMinutesRepository,
+        userRepository: IUserRepository,
+        paymentOrderRepository: IPaymentOrderRepository,
+      ) => {
+        return new CreateMinutesTransaction(
+          clientMinutesRepository,
+          userRepository,
+          paymentOrderRepository,
+        );
+      },
+      inject: [ClientMinutesRepository, UserRepository, PaymentOrderRepository],
     },
   ],
 })

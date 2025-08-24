@@ -30,6 +30,7 @@ export class StripeGateway extends PaymentGateway {
         status: this.mapStatus(paymentIntent.status),
         createdAt: new Date(),
         externalId: paymentIntent.id,
+        clientSecret: paymentIntent.client_secret,
       });
     } catch (error) {
       console.log(error.raw.code, error.raw.message);
@@ -51,6 +52,7 @@ export class StripeGateway extends PaymentGateway {
       status: this.mapStatus(paymentIntent.status),
       createdAt: new Date(),
       externalId: paymentIntent.id,
+      clientSecret: paymentIntent.client_secret,
     });
   }
 

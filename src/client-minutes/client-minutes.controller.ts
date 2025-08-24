@@ -1,21 +1,22 @@
 import {
   BadRequestException,
+  Body,
   Controller,
   Get,
   Post,
-  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { AddPurchaseMinutesUseCase } from './use-cases/add-purchase-minutes';
 import { JwtAuthGuard } from 'src/infra/auth/guards/jwt.guard';
 import { FetchClientMinutes } from './use-cases/fetch-client-minutes';
 import { UserNotFound } from 'src/user/errors/UserNotFound';
+import { CreateMinutesTransactionDto } from './schema/create-minutes-transaction';
+import { CreateMinutesTransaction } from './use-cases/create-minutes-transaction';
 
 @Controller('/client-minutes')
 export class ClientMinutesController {
   constructor(
-    private addPurchaseMinutes: AddPurchaseMinutesUseCase,
+    private createMinutesTransaction: CreateMinutesTransaction,
     private fetchClientMinutesUseCase: FetchClientMinutes,
   ) {}
 
@@ -35,14 +36,15 @@ export class ClientMinutesController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/purchase')
+  @Post('/minutes-transaction')
   async addMinutes(
-    @Query('minutes') minutes: string,
+    @Body() transactionPayload: CreateMinutesTransactionDto,
     @Req() req: { user: { id: string } },
   ) {
-    const response = await this.addPurchaseMinutes.execute(
+    const response = await this.createMinutesTransaction.execute(
       req.user.id,
-      Number(minutes),
+      transactionPayload.minutes,
+      transactionPayload.paymentOrderId,
     );
     if (response.isLeft()) {
       switch (response.value.constructor) {

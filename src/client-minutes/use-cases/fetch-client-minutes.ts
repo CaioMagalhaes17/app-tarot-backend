@@ -22,6 +22,7 @@ export class FetchClientMinutes {
         avaliableMinutes: 0,
         totalMinutes: 0,
         transactions: [],
+        createdAt: new Date(),
         user,
       });
       await this.clientMinutesRepository.create(newMinutes);

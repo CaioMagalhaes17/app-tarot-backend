@@ -24,7 +24,11 @@ export class InMemoryPaymentOrderRepository implements IPaymentOrderRepository {
     throw new Error('Method not implemented.');
   }
   async findById(id: string): Promise<PaymentOrderEntity> {
-    throw new Error('Method not implemented.');
+    const topicIndex = this.paymentOrders.findIndex(
+      (item) => item.id.toString() === id,
+    );
+    if (!this.paymentOrders[topicIndex]) return null;
+    return this.paymentOrders[topicIndex];
   }
   async updateById(
     id: string,
