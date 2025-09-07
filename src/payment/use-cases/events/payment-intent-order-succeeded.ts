@@ -1,6 +1,6 @@
 import { Either, left, right } from 'src/core/Either';
-import { IPaymentOrderRepository } from '../database/payment-order.repository.interface';
-import { PaymentOrderNotFound } from '../error/PaymentOrderNotFound';
+import { IPaymentOrderRepository } from '../../database/payment-order.repository.interface';
+import { PaymentOrderNotFound } from '../../error/PaymentOrderNotFound';
 import { EventGateway } from 'src/gateways/events/event.gateway';
 
 export class PaymentIntentSucceededUseCase {
@@ -9,14 +9,16 @@ export class PaymentIntentSucceededUseCase {
     private eventGateway: EventGateway,
   ) {}
 
-  async execute(externalId: string): Promise<Either<any, any>> {
+  async execute(
+    externalId: string,
+  ): Promise<Either<PaymentOrderNotFound, null>> {
     const paymentOrder =
       await this.paymentOrderRepository.findByExternalId(externalId);
     if (!paymentOrder)
       return left(
         new PaymentOrderNotFound('Ordem de pagamento não encontrada'),
       );
-    paymentOrder.update('completed');
+    paymentOrder.updateStatus('completed');
     await this.paymentOrderRepository.updateById(
       paymentOrder.id.toString(),
       paymentOrder,

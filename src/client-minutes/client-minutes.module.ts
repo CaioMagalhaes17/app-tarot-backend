@@ -11,7 +11,8 @@ import { CreateMinutesTransaction } from './use-cases/create-minutes-transaction
 import { IPaymentOrderRepository } from 'src/payment/database/payment-order.repository.interface';
 import { PaymentOrderRepository } from 'src/payment/database/payment-order.repository';
 import { PaymentOrderDatabaseModule } from 'src/payment/database/payment-oder.module';
-import { AddMinutesTransactionUseCase } from './use-cases/add-minutes-transaction';
+import { AddMinutesTransactionUseCase } from './use-cases/events/add-minutes-transaction';
+import { FailedMinutesTransactionUseCase } from './use-cases/events/failed-minutes-transaction';
 
 @Module({
   imports: [
@@ -39,6 +40,13 @@ import { AddMinutesTransactionUseCase } from './use-cases/add-minutes-transactio
       inject: [ClientMinutesRepository],
     },
     {
+      provide: FailedMinutesTransactionUseCase,
+      useFactory: (clientMinutesRepository: IClientMinutesRepository) => {
+        return new FailedMinutesTransactionUseCase(clientMinutesRepository);
+      },
+      inject: [ClientMinutesRepository],
+    },
+    {
       provide: CreateMinutesTransaction,
       useFactory: (
         clientMinutesRepository: IClientMinutesRepository,
@@ -54,6 +62,6 @@ import { AddMinutesTransactionUseCase } from './use-cases/add-minutes-transactio
       inject: [ClientMinutesRepository, UserRepository, PaymentOrderRepository],
     },
   ],
-  exports: [AddMinutesTransactionUseCase],
+  exports: [AddMinutesTransactionUseCase, FailedMinutesTransactionUseCase],
 })
 export class ClientMinutesModule {}

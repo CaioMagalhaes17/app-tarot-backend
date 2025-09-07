@@ -1,3 +1,6 @@
 docker build -f Dockerfile.dev -t devimage .
 
 stripe trigger payment_intent.succeeded
+
+stripe payment_intents confirm pi_3S4k90KdD0GY9WiR1jBU6BP3 \
+  --payment-method pm_card_chargeDeclined

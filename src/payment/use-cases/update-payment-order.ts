@@ -18,7 +18,7 @@ export class UpdatePaymentOrderUseCase {
     const paymentOrder =
       await this.paymentOrderRepository.findByExternalId(externalId);
     if (!paymentOrder) return left(new PaymentOrderNotFound());
-    paymentOrder.update(gatewayOrder.value.status);
+    paymentOrder.updateStatus(gatewayOrder.value.status);
     await this.paymentOrderRepository.updateById(
       paymentOrder.id.toString(),
       paymentOrder,

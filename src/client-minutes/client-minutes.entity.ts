@@ -50,6 +50,11 @@ export class ClientMinutesEntity extends BaseEntity<ClientMinutesProps> {
     return this.props.avaliableMinutes;
   }
 
+  failedTransaction(transactionIndex: number, message: string) {
+    this.props.transactions[transactionIndex].status = 'failed';
+    this.props.transactions[transactionIndex].description = message;
+  }
+
   addMinutesPurchased(transactionIndex: number) {
     this.props.totalMinutes =
       this.props.totalMinutes +
@@ -58,6 +63,8 @@ export class ClientMinutesEntity extends BaseEntity<ClientMinutesProps> {
       this.props.avaliableMinutes +
       this.props.transactions[transactionIndex].minutes;
     this.props.transactions[transactionIndex].status = 'completed';
+    this.props.transactions[transactionIndex].description =
+      'Compra realizada com sucesso';
     this.touch();
   }
 

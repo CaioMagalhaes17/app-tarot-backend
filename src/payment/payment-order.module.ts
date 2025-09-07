@@ -9,14 +9,17 @@ import { UserRepository } from 'src/user/database/user.repository';
 import { IUserRepository } from 'src/user/database/user.repository.interface';
 import { GatewaysModule } from 'src/gateways/gateways.module';
 import { PaymentGateway } from 'src/gateways/payment/payment-gateway';
-import { PaymentIntentSucceededUseCase } from './use-cases/payment-intent-order-succeeded';
+import { PaymentIntentSucceededUseCase } from './use-cases/events/payment-intent-order-succeeded';
 import { UpdatePaymentOrderUseCase } from './use-cases/update-payment-order';
 import { EventGateway } from 'src/gateways/events/event.gateway';
+import { PaymentIntentOrderFailedUseCase } from './use-cases/events/payment-intent-order-failed';
+import { PaymentFailedMessageFactory } from './factories/payment-failed-message.factory';
 
 @Module({
   imports: [PaymentOrderDatabaseModule, UserDatabaseModule, GatewaysModule],
   controllers: [PaymentOrderController],
   providers: [
+    PaymentFailedMessageFactory,
     {
       provide: CreatePaymentOrderUseCase,
       useFactory: (
@@ -58,7 +61,26 @@ import { EventGateway } from 'src/gateways/events/event.gateway';
       },
       inject: [PaymentOrderRepository, EventGateway],
     },
+    {
+      provide: PaymentIntentOrderFailedUseCase,
+      useFactory: (
+        paymentOrderRepository: IPaymentOrderRepository,
+        paymentFailedMessageFactory: PaymentFailedMessageFactory,
+        eventGateway: EventGateway,
+      ) => {
+        return new PaymentIntentOrderFailedUseCase(
+          paymentOrderRepository,
+          paymentFailedMessageFactory,
+          eventGateway,
+        );
+      },
+      inject: [
+        PaymentOrderRepository,
+        PaymentFailedMessageFactory,
+        EventGateway,
+      ],
+    },
   ],
-  exports: [PaymentIntentSucceededUseCase],
+  exports: [PaymentIntentSucceededUseCase, PaymentIntentOrderFailedUseCase],
 })
 export class PaymentOrderModule {}

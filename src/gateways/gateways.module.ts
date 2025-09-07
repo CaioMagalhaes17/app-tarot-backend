@@ -6,8 +6,11 @@ import { PaymentIntentCreatedListener } from './events/listeners/payment-created
 import { InfraEventEmitter } from './events/event-emmiter.gateway';
 import { PaymentOrderSucceedListener } from './events/listeners/payment-order-succeed';
 import { PaymentOrderCompletedFactory } from './payment/factories/payment-order-completed-factory';
-import { AddMinutesTransactionUseCase } from 'src/client-minutes/use-cases/add-minutes-transaction';
+import { AddMinutesTransactionUseCase } from 'src/client-minutes/use-cases/events/add-minutes-transaction';
 import { ClientMinutesModule } from 'src/client-minutes/client-minutes.module';
+import { PaymentOrderFailedFactory } from './payment/factories/payment-order-failed-factory';
+import { FailedMinutesTransactionUseCase } from 'src/client-minutes/use-cases/events/failed-minutes-transaction';
+import { PaymentOrderFailedListener } from './events/listeners/payment-order-failed';
 
 @Module({
   imports: [ClientMinutesModule],
@@ -29,8 +32,18 @@ import { ClientMinutesModule } from 'src/client-minutes/client-minutes.module';
       },
       inject: [AddMinutesTransactionUseCase],
     },
+    {
+      provide: PaymentOrderFailedFactory,
+      useFactory: (
+        failedMinutesTransactionUseCase: FailedMinutesTransactionUseCase,
+      ) => {
+        return new PaymentOrderFailedFactory(failedMinutesTransactionUseCase);
+      },
+      inject: [FailedMinutesTransactionUseCase],
+    },
     PaymentIntentCreatedListener,
     PaymentOrderSucceedListener,
+    PaymentOrderFailedListener,
   ],
   exports: [PaymentGateway, EventGateway],
 })

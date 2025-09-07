@@ -1,7 +1,7 @@
 import { Either, left, right } from 'src/core/Either';
-import { IClientMinutesRepository } from '../database/client-minutes.repository.interface';
-import { MinutesNotFound } from '../errors/minutes-not-found';
-import { TransactionNotFound } from '../errors/transaction-not-found';
+import { IClientMinutesRepository } from '../../database/client-minutes.repository.interface';
+import { MinutesNotFound } from '../../errors/minutes-not-found';
+import { TransactionNotFound } from '../../errors/transaction-not-found';
 import { PaymentOrderEntity } from 'src/payment/payment-order.entity';
 
 type AddMinutesTransactionUseCaseResponse = Either<

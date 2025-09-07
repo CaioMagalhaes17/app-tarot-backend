@@ -1,6 +1,10 @@
 import { BaseEntity } from 'src/core/base.entity';
 import { UniqueEntityID } from 'src/core/unique-entity-id';
 
+export type ErrorDescription =
+  | 'Cartão recusado'
+  | 'Saldo insuficiente'
+  | 'Erro não tratado';
 export type OrderType = 'payment' | 'withdrawal';
 export type ProductType = 'minutes';
 export type OrderStatus =
@@ -19,7 +23,7 @@ export interface PaymentOrderEntityProps {
   productType: ProductType;
   updatedAt?: Date;
   description?: string;
-  errorDescription?: string;
+  errorDescription?: ErrorDescription;
   externalId?: string;
   paymentMethod?: string;
   withdrawlMethod?: string;
@@ -78,7 +82,12 @@ export class PaymentOrderEntity extends BaseEntity<PaymentOrderEntityProps> {
     return this.props.withdrawlMethod;
   }
 
-  update(status: OrderStatus, errorDescription?: string) {
+  cleanErrors() {
+    this.props.errorDescription = undefined;
+    this.touch();
+  }
+
+  updateStatus(status: OrderStatus, errorDescription?: ErrorDescription) {
     this.props.status = status;
     if (errorDescription) {
       this.props.errorDescription = errorDescription;
