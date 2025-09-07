@@ -13,7 +13,7 @@ export class StripeEventFactory {
       case 'payment_intent.succeeded':
         return this.paymentIntentSucceeded;
       case 'charge.succeeded':
-        return this.paymentIntentSucceeded;
+      //return this.paymentIntentSucceeded;
 
       default:
         console.warn(`⚠️ Nenhum use case configurado para o evento: ${type}`);

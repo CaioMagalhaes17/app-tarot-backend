@@ -15,7 +15,6 @@ export class UpdatePaymentOrderUseCase {
     const gatewayOrder = await this.paymentGateway.getPaymentOrder(externalId);
     if (gatewayOrder.isLeft())
       return left(new Error(gatewayOrder.value.message));
-    console.log(gatewayOrder);
     const paymentOrder =
       await this.paymentOrderRepository.findByExternalId(externalId);
     if (!paymentOrder) return left(new PaymentOrderNotFound());

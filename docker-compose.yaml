@@ -19,6 +19,7 @@ services:
       - app_network
   stripe-cli:
     image: stripe/stripe-cli:latest
+    container_name: stripe-cli
     command: >
       listen --forward-to http://tarot-backend:3000/webhooks/stripe
     environment:

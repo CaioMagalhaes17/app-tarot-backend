@@ -11,9 +11,13 @@ import { FeedbacksModule } from './feedbacks/feedbacks.module';
 import { ClientMinutesModule } from './client-minutes/client-minutes.module';
 import { PaymentOrderModule } from './payment/payment-order.module';
 import { WebhooksModule } from './webhooks/webhooks.module';
+import { GatewaysModule } from './gateways/gateways.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
+    EventEmitterModule.forRoot({}),
+    GatewaysModule,
     InfraModule,
     UserModule,
     MongoModule,

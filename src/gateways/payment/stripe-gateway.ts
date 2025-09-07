@@ -33,7 +33,7 @@ export class StripeGateway extends PaymentGateway {
         clientSecret: paymentIntent.client_secret,
       });
     } catch (error) {
-      console.log(error.raw.code, error.raw.message);
+      console.log('LOGGER', error.raw.code, error.raw.message);
       return left(
         new CreatePaymentOrderError(
           'Erro ao criar ordem de pagamento na Stripe',
@@ -46,7 +46,6 @@ export class StripeGateway extends PaymentGateway {
     externalId: string,
   ): Promise<Either<Error, PaymentOrder>> {
     const paymentIntent = await this.stripe.paymentIntents.retrieve(externalId);
-    console.log(paymentIntent);
     return right({
       amount: paymentIntent.amount,
       status: this.mapStatus(paymentIntent.status),

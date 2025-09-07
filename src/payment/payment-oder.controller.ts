@@ -55,7 +55,6 @@ export class PaymentOrderController {
   @Patch(':externalId')
   async updatePayment(@Param('externalId') externalId: string) {
     const response = await this.updatePaymentOrderUseCase.execute(externalId);
-    console.log(response);
     if (response.isLeft()) {
       switch (response.value.constructor) {
         case Error:

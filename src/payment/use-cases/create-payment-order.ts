@@ -45,7 +45,7 @@ export class CreatePaymentOrderUseCase {
       status: gatewayResponse.value.status,
       type: 'payment',
       description,
-      user,
+      userId,
       productType,
       externalId: gatewayResponse.value.externalId,
     });

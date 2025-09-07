@@ -41,6 +41,9 @@ export class ClientMinutes extends Document {
     default: [],
   })
   transactions: MinutesTransaction[];
+
+  @Prop()
+  createdAt: Date;
 }
 
 export const ClientMinutesSchema = SchemaFactory.createForClass(ClientMinutes);

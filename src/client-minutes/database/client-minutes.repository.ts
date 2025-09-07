@@ -17,13 +17,39 @@ export class ClientMinutesRepository extends BaseInfraRepository<
 
   async findAll(): Promise<ClientMinutesEntity[]> {
     return this.mapper.toDomainArray(
-      await this.model.find().populate('userId').exec(),
+      await this.model
+        .find()
+        .populate(['userId', 'transactions.paymentOrder'])
+        .lean()
+        .exec(),
     );
+  }
+
+  async findById(id: string): Promise<ClientMinutesEntity | null> {
+    const firstTry = await this.model
+      .findById(new Types.ObjectId(id))
+      .populate(['userId', 'transactions.paymentOrder'])
+      .lean()
+      .exec();
+
+    if (firstTry) {
+      return this.mapper.toDomain(firstTry);
+    }
+    const secund = await this.model
+      .findById(id)
+      .populate(['userId', 'transactions.paymentOrder'])
+      .lean()
+      .exec();
+    return this.mapper.toDomain(secund);
   }
 
   async findByParam<ParamType>(param: ParamType) {
     return this.mapper.toDomainArray(
-      await this.model.find(param).populate('userId').exec(),
+      await this.model
+        .find(param)
+        .populate(['userId', 'transactions.paymentOrder'])
+        .lean()
+        .exec(),
     );
   }
 
@@ -33,18 +59,23 @@ export class ClientMinutesRepository extends BaseInfraRepository<
         .findOne({
           userId: new Types.ObjectId(userId),
         })
-        .populate('userId')
+        .populate(['userId', 'transactions.paymentOrder'])
+        .lean()
         .exec(),
     );
+
     if (firstTry) return firstTry;
-    return this.mapper.toDomain(
+
+    const teste = this.mapper.toDomain(
       await this.model
         .findOne({
           userId,
         })
-        .populate('userId')
+        .populate(['userId', 'transactions.paymentOrder'])
+        .lean()
         .exec(),
     );
+    return teste;
   }
 
   async updateById(
@@ -55,7 +86,14 @@ export class ClientMinutesRepository extends BaseInfraRepository<
       id,
       this.mapper.toPersistance(updateData),
     );
-    return this.mapper.toDomain(await this.model.findById(id).exec());
+
+    return this.mapper.toDomain(
+      await this.model
+        .findById(id)
+        .populate(['userId', 'transactions.paymentOrder'])
+        .lean()
+        .exec(),
+    );
   }
 
   async create(data: ClientMinutesEntity): Promise<{ id: string }> {
@@ -63,7 +101,8 @@ export class ClientMinutesRepository extends BaseInfraRepository<
       .findOne({
         userId: data.user.id.toString(),
       })
-      .populate('userId')
+      .populate(['userId', 'transactions.paymentOrder'])
+      .lean()
       .exec();
     if (existing) {
       return { id: existing.id };

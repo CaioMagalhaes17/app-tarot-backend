@@ -1,15 +1,17 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
-import { User } from 'src/user/database/user.schema';
-import { OrderStatus, OrderType } from '../payment-order.entity';
+import { Document } from 'mongoose';
+import { OrderStatus, OrderType, ProductType } from '../payment-order.entity';
 
 @Schema({ timestamps: true })
 export class PaymentOrder extends Document {
-  @Prop({ type: Types.ObjectId, ref: User.name, required: true })
-  userId: Types.ObjectId;
+  @Prop({ type: String, required: true })
+  userId: string;
 
   @Prop({ type: String, enum: ['payment', 'withdrawal'], required: true })
   type: OrderType;
+
+  @Prop({ type: String, enum: ['minutes'], required: true })
+  productType: ProductType;
 
   @Prop({ type: Number, required: true })
   amount: number;

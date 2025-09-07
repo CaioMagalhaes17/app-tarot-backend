@@ -1,5 +1,5 @@
 import { BaseInfraRepository } from 'src/core/base.repository';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { PaymentOrder } from './payment-order.schema';
 import { PaymentOrderEntity } from '../payment-order.entity';
 import { PaymentOrderMapper } from './payment-order.mapper';
@@ -21,6 +21,7 @@ export class PaymentOrderRepository
     const result = await this.model
       .findOne({ externalId })
       .populate('userId')
+      .lean()
       .exec();
     if (!result) return null;
     return this.mapper.toDomain(result);
@@ -28,13 +29,23 @@ export class PaymentOrderRepository
 
   async findAll(): Promise<PaymentOrderEntity[]> {
     return this.mapper.toDomainArray(
-      await this.model.find().populate('userId').exec(),
+      await this.model.find().populate('userId').lean().exec(),
     );
   }
 
   async findByParam<ParamType>(param: ParamType) {
     return this.mapper.toDomainArray(
-      await this.model.find(param).populate('userId').exec(),
+      await this.model.find(param).populate('userId').lean().exec(),
+    );
+  }
+
+  async findById(id: string) {
+    return this.mapper.toDomain(
+      await this.model
+        .findById(new Types.ObjectId(id))
+        .populate('userId')
+        .lean()
+        .exec(),
     );
   }
 
@@ -45,6 +56,7 @@ export class PaymentOrderRepository
           userId,
         })
         .populate('userId')
+        .lean()
         .exec(),
     );
   }

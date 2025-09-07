@@ -45,7 +45,6 @@ export class CreateMinutesTransaction {
       status: 'pending',
       paymentOrder,
     });
-
     await this.clientMinutesRepository.updateById(
       clientMinutes.id.toString(),
       clientMinutes,

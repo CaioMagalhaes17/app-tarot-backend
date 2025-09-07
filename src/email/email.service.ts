@@ -34,7 +34,6 @@ export class EmailService {
         text,
         html,
       });
-      console.log(info);
       this.logger.log(`Email enviado: ${info.messageId}`);
     } catch (error) {
       this.logger.error('Erro ao enviar email', error);

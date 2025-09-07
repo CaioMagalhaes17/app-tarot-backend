@@ -11,6 +11,7 @@ import { GatewaysModule } from 'src/gateways/gateways.module';
 import { PaymentGateway } from 'src/gateways/payment/payment-gateway';
 import { PaymentIntentSucceededUseCase } from './use-cases/payment-intent-order-succeeded';
 import { UpdatePaymentOrderUseCase } from './use-cases/update-payment-order';
+import { EventGateway } from 'src/gateways/events/event.gateway';
 
 @Module({
   imports: [PaymentOrderDatabaseModule, UserDatabaseModule, GatewaysModule],
@@ -48,14 +49,14 @@ import { UpdatePaymentOrderUseCase } from './use-cases/update-payment-order';
       provide: PaymentIntentSucceededUseCase,
       useFactory: (
         paymentOrderRepository: IPaymentOrderRepository,
-        paymentGateway: PaymentGateway,
+        eventGateway: EventGateway,
       ) => {
         return new PaymentIntentSucceededUseCase(
           paymentOrderRepository,
-          paymentGateway,
+          eventGateway,
         );
       },
-      inject: [PaymentOrderRepository, PaymentGateway],
+      inject: [PaymentOrderRepository, EventGateway],
     },
   ],
   exports: [PaymentIntentSucceededUseCase],

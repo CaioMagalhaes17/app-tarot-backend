@@ -14,10 +14,9 @@ export class FetchClientMinutes {
   ): Promise<Either<UserNotFound, ClientMinutesEntity>> {
     const user = await this.userRepository.findById(userId);
     if (!user) return left(new UserNotFound());
-    const clientMinutes = await this.clientMinutesRepository.findByParam<{
-      userId: string;
-    }>({ userId });
-    if (!clientMinutes || clientMinutes.length === 0) {
+    const clientMinutes =
+      await this.clientMinutesRepository.findByUserId(userId);
+    if (!clientMinutes) {
       const newMinutes = ClientMinutesEntity.create({
         avaliableMinutes: 0,
         totalMinutes: 0,
@@ -28,6 +27,6 @@ export class FetchClientMinutes {
       await this.clientMinutesRepository.create(newMinutes);
       return right(newMinutes);
     }
-    return right(clientMinutes[0]);
+    return right(clientMinutes);
   }
 }

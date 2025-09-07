@@ -11,7 +11,7 @@ import { CreateMinutesTransaction } from './use-cases/create-minutes-transaction
 import { IPaymentOrderRepository } from 'src/payment/database/payment-order.repository.interface';
 import { PaymentOrderRepository } from 'src/payment/database/payment-order.repository';
 import { PaymentOrderDatabaseModule } from 'src/payment/database/payment-oder.module';
-import { UpdateMinutesTransactionUseCase } from './use-cases/update-minutes-transaction';
+import { AddMinutesTransactionUseCase } from './use-cases/add-minutes-transaction';
 
 @Module({
   imports: [
@@ -32,19 +32,11 @@ import { UpdateMinutesTransactionUseCase } from './use-cases/update-minutes-tran
       inject: [ClientMinutesRepository, UserRepository],
     },
     {
-      provide: UpdateMinutesTransactionUseCase,
-      useFactory: (
-        clientMinutesRepository: IClientMinutesRepository,
-        paymentOrderRepository: IPaymentOrderRepository,
-        userRepository: IUserRepository,
-      ) => {
-        return new UpdateMinutesTransactionUseCase(
-          clientMinutesRepository,
-          paymentOrderRepository,
-          userRepository,
-        );
+      provide: AddMinutesTransactionUseCase,
+      useFactory: (clientMinutesRepository: IClientMinutesRepository) => {
+        return new AddMinutesTransactionUseCase(clientMinutesRepository);
       },
-      inject: [ClientMinutesRepository, PaymentOrderRepository, UserRepository],
+      inject: [ClientMinutesRepository],
     },
     {
       provide: CreateMinutesTransaction,
@@ -62,5 +54,6 @@ import { UpdateMinutesTransactionUseCase } from './use-cases/update-minutes-tran
       inject: [ClientMinutesRepository, UserRepository, PaymentOrderRepository],
     },
   ],
+  exports: [AddMinutesTransactionUseCase],
 })
 export class ClientMinutesModule {}

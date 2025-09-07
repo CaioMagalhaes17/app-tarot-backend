@@ -15,7 +15,6 @@ export class SendEmailVerificationUseCase {
       this.configService.get<string>('ENV') === 'local'
         ? `${this.configService.get<string>('FRONTEND_URL_LOCAL')}/auth/magic-link/${token}`
         : `${this.configService.get<string>('FRONTEND_URL_HML')}/auth/magic-link/${token}`;
-    console.log(magicLink);
     await this.emailGateway.sendEmail({
       subject: 'Confirme seu email',
       html: `

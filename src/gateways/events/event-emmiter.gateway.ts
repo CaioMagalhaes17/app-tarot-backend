@@ -3,7 +3,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DomainEvent, EventGateway } from './event.gateway';
 
 @Injectable()
-export class EventEmitter extends EventGateway {
+export class InfraEventEmitter extends EventGateway {
   constructor(private readonly eventEmitter: EventEmitter2) {
     super();
   }

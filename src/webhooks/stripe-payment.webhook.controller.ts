@@ -27,18 +27,12 @@ export class StripePaymentWebhookController {
   async execute(@Req() req: Request) {
     const event = req.body as StripeWebhookDTO;
     const useCase = this.stripeEventFactory.create(event.type);
-    const eventData = {
-      status: event.data.object.status,
-    };
-    const response = await useCase.execute(event.data.object.id);
 
-    console.log(event.type, event.data.object.status, event.data.object);
-    // console.log('Evento recebido:', event.type);
-    // console.log('ID do objeto:', event.data.object.id);
-  }
-
-  @Get()
-  async executes() {
-    return { asddas: 'diosandoias' };
+    if (useCase) {
+      const response = await useCase.execute(event.data.object.id);
+      if (response.isLeft()) {
+        console.log('LOGGER', response.value);
+      }
+    }
   }
 }
