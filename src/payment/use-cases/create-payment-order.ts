@@ -1,9 +1,10 @@
 import { PaymentGateway } from 'src/gateways/payment/payment-gateway';
 import { IPaymentOrderRepository } from '../database/payment-order.repository.interface';
-import { PaymentOrderEntity, ProductType } from '../payment-order.entity';
+import { PaymentOrderEntity } from '../payment-order.entity';
 import { Either, left, right } from 'src/core/Either';
 import { IUserRepository } from 'src/user/database/user.repository.interface';
 import { UserNotFound } from 'src/user/errors/UserNotFound';
+import { ProductCategory } from 'src/products/product-entity';
 
 export class CreatePaymentOrderUseCase {
   constructor(
@@ -21,7 +22,7 @@ export class CreatePaymentOrderUseCase {
     userId: string;
     amount: number;
     description: string;
-    productType: ProductType;
+    productType: ProductCategory;
   }): Promise<
     Either<
       Error | UserNotFound,

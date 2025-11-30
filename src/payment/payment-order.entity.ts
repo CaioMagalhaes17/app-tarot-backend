@@ -1,12 +1,12 @@
 import { BaseEntity } from 'src/core/base.entity';
 import { UniqueEntityID } from 'src/core/unique-entity-id';
+import { ProductEntityProps } from 'src/products/product-entity';
 
 export type ErrorDescription =
   | 'Cartão recusado'
   | 'Saldo insuficiente'
   | 'Erro não tratado';
 export type OrderType = 'payment' | 'withdrawal';
-export type ProductType = 'minutes';
 export type OrderStatus =
   | 'pending'
   | 'processing'
@@ -20,7 +20,7 @@ export interface PaymentOrderEntityProps {
   amount: number;
   status: OrderStatus;
   createdAt: Date;
-  productType: ProductType;
+  productType: ProductEntityProps['category'];
   updatedAt?: Date;
   description?: string;
   errorDescription?: ErrorDescription;

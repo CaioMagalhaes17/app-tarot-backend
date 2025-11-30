@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { ProductType } from '../payment-order.entity';
+import { ProductCategory } from 'src/products/product-entity';
 
 export class CreatePaymentIntentDto {
   @IsString()
@@ -12,5 +12,5 @@ export class CreatePaymentIntentDto {
 
   @IsString()
   @IsNotEmpty()
-  productType: ProductType;
+  productType: ProductCategory;
 }

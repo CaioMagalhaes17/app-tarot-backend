@@ -1,4 +1,3 @@
-import { makeUser } from 'src/user/tests/makeUser';
 import {
   PaymentOrderEntity,
   PaymentOrderEntityProps,
