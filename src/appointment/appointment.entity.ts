@@ -4,13 +4,27 @@ import { Optional } from 'src/core/Either';
 import { UniqueEntityID } from 'src/core/unique-entity-id';
 import { UserEntity } from 'src/user/user.entity';
 
+export enum AppointmentStatusEnum {
+  SCHEDULED = 'scheduled',
+  ON_GOING = 'on-going',
+  COMPLETED = 'completed',
+  CANCELED = 'canceled',
+}
+
+export type AppointmentStatus =
+  | 'scheduled'
+  | 'on-going'
+  | 'completed'
+  | 'canceled';
+
 export type AppointmentProps = {
   atendentService: AtendentServicesEntity;
   user: UserEntity;
   date: Date;
   startTime: string;
   endTime: string;
-  status: 'scheduled' | 'completed' | 'canceled';
+  status: AppointmentStatus;
+  canceledReason?: string;
   createdAt: Date;
   updatedAt?: Date;
 };
@@ -53,5 +67,37 @@ export class AppointmentEntity extends BaseEntity<AppointmentProps> {
 
   get user() {
     return this.props.user;
+  }
+
+  get canceledReason() {
+    return this.props.canceledReason;
+  }
+
+  touch() {
+    this.props.updatedAt = new Date();
+  }
+
+  updateAppointment(props: Partial<AppointmentEntity>) {
+    if (props.date) {
+      this.props.date = props.date;
+    }
+
+    if (props.startTime) {
+      this.props.startTime = props.startTime;
+    }
+
+    if (props.endTime) {
+      this.props.endTime = props.endTime;
+    }
+
+    if (props.status) {
+      this.props.status = props.status;
+    }
+
+    if (props.canceledReason) {
+      this.props.canceledReason = props.canceledReason;
+    }
+
+    this.touch();
   }
 }

@@ -13,6 +13,8 @@ import { WebhooksModule } from './webhooks/webhooks.module';
 import { GatewaysModule } from './gateways/gateways.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ProductModule } from './products/product.module';
+import { AppointmentModule } from './appointment/appointment.module';
+import { AtendentServicesModule } from './atendent-services/atendent-services.module';
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { ProductModule } from './products/product.module';
     ClientMinutesModule,
     PaymentOrderModule,
     WebhooksModule,
+    AppointmentModule,
+    AtendentServicesModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),

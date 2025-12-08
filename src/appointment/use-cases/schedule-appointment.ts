@@ -1,9 +1,9 @@
 import { AppointmentEntity } from '../appointment.entity';
 import { IAppointmentRepository } from '../database/appointment.repository.interface';
-import { left } from 'src/core/Either';
+import { Either, left, right } from 'src/core/Either';
 import { ResourceNotFoundError } from 'src/core/errors/resource-not-found';
 import { IAtendentServicesRepository } from 'src/atendent-services/database/atendent-services.repository.interface';
-import { UserRepository } from 'src/user/database/user.repository';
+import { IUserRepository } from 'src/user/database/user.repository.interface';
 
 type ScheduleAppointmentUseCaseRequest = {
   userId: string;
@@ -17,7 +17,7 @@ export class ScheduleAppointmentUseCase {
   constructor(
     private appointmentRepository: IAppointmentRepository,
     private atendentServiceRepository: IAtendentServicesRepository,
-    private userRepository: UserRepository,
+    private userRepository: IUserRepository,
   ) {}
 
   async execute({
@@ -26,7 +26,9 @@ export class ScheduleAppointmentUseCase {
     endTime,
     startTime,
     userId,
-  }: ScheduleAppointmentUseCaseRequest) {
+  }: ScheduleAppointmentUseCaseRequest): Promise<
+    Either<ResourceNotFoundError, null>
+  > {
     const atendentService =
       await this.atendentServiceRepository.findById(atendentServiceId);
     if (!atendentService)
@@ -42,5 +44,6 @@ export class ScheduleAppointmentUseCase {
       user,
     });
     await this.appointmentRepository.create(appointment);
+    return right(null);
   }
 }

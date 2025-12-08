@@ -1,13 +1,13 @@
 import { IAtendentServicesRepository } from '../database/atendent-services.repository.interface';
 
-export class FetchAtendentServices {
+export class FetchAllAtendentServicesByService {
   constructor(
     private atendentServicesRepository: IAtendentServicesRepository,
   ) {}
 
-  async execute(atendentId: string) {
-    return await this.atendentServicesRepository.findAllAtendentServicesByAtendentId(
-      atendentId,
+  async execute(serviceId: string) {
+    return await this.atendentServicesRepository.findAtendentServiceByServiceId(
+      serviceId,
     );
   }
 }

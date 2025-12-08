@@ -45,12 +45,30 @@ export class AtendentServicesEntity extends BaseEntity<AtendentServicesProps> {
     return this.props.isActive;
   }
 
+  get createdAt() {
+    return this.props.createdAt;
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt;
+  }
+
   touch() {
     this.props.updatedAt = new Date();
   }
 
   inactivate() {
     this.props.isActive = false;
+    this.touch();
+  }
+
+  update(props: Partial<AtendentServicesEntity>) {
+    if (props.description) {
+      this.props.description = props.description;
+    }
+    if (props.price) {
+      this.props.price = props.price;
+    }
     this.touch();
   }
 }

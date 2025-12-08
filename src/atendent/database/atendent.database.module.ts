@@ -30,6 +30,6 @@ import { UserDatabaseModule } from 'src/user/database/user.database.module';
       inject: [getModelToken(Atendent.name), AtendentMapper],
     },
   ],
-  exports: [AtendentRepository],
+  exports: [AtendentRepository, AtendentMapper],
 })
 export class AtendentDatabaseModule {}

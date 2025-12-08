@@ -15,6 +15,9 @@ import { ConfigService } from '@nestjs/config';
 import { VerifyTokenUseCase } from './use-cases/verify-token-use-case';
 import { IUserRepository } from './database/user.repository.interface';
 import { GetUserUseCase } from './use-cases/get-user-use-case';
+import { IAtendentRepository } from 'src/atendent/database/atendent.repository.interface';
+import { AtendentRepository } from 'src/atendent/database/atendent.repository';
+import { AtendentDatabaseModule } from 'src/atendent/database/atendent.database.module';
 
 @Module({
   imports: [
@@ -23,6 +26,7 @@ import { GetUserUseCase } from './use-cases/get-user-use-case';
     UserDatabaseModule,
     EmailModule,
     AuthModule,
+    AtendentDatabaseModule,
   ],
   controllers: [UserController],
   providers: [
@@ -38,10 +42,15 @@ import { GetUserUseCase } from './use-cases/get-user-use-case';
       useFactory: (
         userRepository: IUserRepository,
         encrypterGateway: EncrypterGateway,
+        atendentRepository: IAtendentRepository,
       ) => {
-        return new UserLoginUseCase(userRepository, encrypterGateway);
+        return new UserLoginUseCase(
+          userRepository,
+          encrypterGateway,
+          atendentRepository,
+        );
       },
-      inject: [UserRepository, EncrypterGateway],
+      inject: [UserRepository, EncrypterGateway, AtendentRepository],
     },
     {
       provide: UserSignupUseCase,

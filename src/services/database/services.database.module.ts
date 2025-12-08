@@ -21,6 +21,6 @@ import { ServicesRepository } from './services.repository';
       inject: [getModelToken(Services.name), ServicesMapper],
     },
   ],
-  exports: [ServicesRepository],
+  exports: [ServicesRepository, ServicesMapper],
 })
 export class ServicesDatabaseModule {}

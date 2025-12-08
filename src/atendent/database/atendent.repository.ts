@@ -24,6 +24,7 @@ export class AtendentRepository extends BaseInfraRepository<
       .find({ userId: new Types.ObjectId(userId) })
       .populate('userId')
       .exec();
+
     if (atendent.length === 0) return null;
     return this.mapper.toDomain(atendent[0]);
   }
@@ -35,9 +36,9 @@ export class AtendentRepository extends BaseInfraRepository<
         .populate('userId')
         .exec(),
     );
+
     return atendent;
   }
-
   async findAllPaginated<T = unknown>(page: number, limit: number, param?: T) {
     const skip = (page - 1) * limit;
     const [data, total] = await Promise.all([

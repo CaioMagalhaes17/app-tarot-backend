@@ -15,10 +15,10 @@ export class AtendentServices extends Document {
   isActive: boolean;
 
   @Prop({ type: Types.ObjectId, ref: Atendent.name, required: true })
-  atendent: Types.ObjectId;
+  atendentId: Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, ref: Services.name, required: true })
-  service: Types.ObjectId;
+  serviceId: Types.ObjectId;
 }
 
 export const AtendentServicesSchema =

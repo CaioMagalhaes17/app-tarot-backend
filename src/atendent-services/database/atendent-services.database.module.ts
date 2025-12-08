@@ -7,15 +7,30 @@ import {
 } from './atendent-services.schema';
 import { AtendentServicesMapper } from './atendent-services.mapper';
 import { AtendentServicesRepository } from './atendent-services.repository';
+import { ServicesMapper } from 'src/services/database/services.mapper';
+import { AtendentMapper } from 'src/atendent/database/atendent.mapper';
+import { ServicesDatabaseModule } from 'src/services/database/services.database.module';
+import { AtendentDatabaseModule } from 'src/atendent/database/atendent.database.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: AtendentServices.name, schema: AtendentServicesSchema },
     ]),
+    ServicesDatabaseModule,
+    AtendentDatabaseModule,
   ],
   providers: [
-    AtendentServicesMapper,
+    {
+      provide: AtendentServicesMapper,
+      useFactory: (
+        serviceMapper: ServicesMapper,
+        atendentMapper: AtendentMapper,
+      ) => {
+        return new AtendentServicesMapper(serviceMapper, atendentMapper);
+      },
+      inject: [ServicesMapper, AtendentMapper],
+    },
     {
       provide: AtendentServicesRepository,
       useFactory: (
@@ -27,6 +42,6 @@ import { AtendentServicesRepository } from './atendent-services.repository';
       inject: [getModelToken(AtendentServices.name), AtendentServicesMapper],
     },
   ],
-  exports: [AtendentServicesRepository],
+  exports: [AtendentServicesRepository, AtendentServicesMapper],
 })
 export class AtendentServicesDatabaseModule {}

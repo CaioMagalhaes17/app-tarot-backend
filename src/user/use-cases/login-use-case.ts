@@ -3,6 +3,7 @@ import { InvalidLoginError } from '../errors/InvalidLogin';
 import { EncrypterGateway } from 'src/infra/auth/cryptography/encrypter.interface';
 import { UserEntity } from '../user.entity';
 import { IUserRepository } from '../database/user.repository.interface';
+import { IAtendentRepository } from 'src/atendent/database/atendent.repository.interface';
 
 type UserLoginUseCaseResponse = Either<
   InvalidLoginError,
@@ -12,6 +13,7 @@ export class UserLoginUseCase {
   constructor(
     private userRepository: IUserRepository,
     private encrypterGateway: EncrypterGateway,
+    private atendentRepository: IAtendentRepository,
   ) {}
 
   async execute({
@@ -29,7 +31,33 @@ export class UserLoginUseCase {
       await this.encrypterGateway.comparePassword(password, user[0].password);
     if (!isPasswordValid) return left(new InvalidLoginError());
 
-    //procurar perfil da atendente, caso tenha retornar no token
+    if (user[0].isAtendent) {
+      const atendent = await this.atendentRepository.findByUserId(
+        user[0].id.toString(),
+      );
+      if (!atendent) {
+        return right({
+          token: this.encrypterGateway.encryptToken({
+            id: user[0].id.toValue(),
+            name: user[0].name,
+            isAtendent: user[0].isAtendent,
+            permission: user[0].permission,
+          }),
+          user: user[0],
+        });
+      }
+      return right({
+        token: this.encrypterGateway.encryptToken({
+          id: user[0].id.toValue(),
+          name: user[0].name,
+          isAtendent: user[0].isAtendent,
+          permission: user[0].permission,
+          atendentId: atendent.id.toString(),
+        }),
+        user: user[0],
+      });
+    }
+
     return right({
       token: this.encrypterGateway.encryptToken({
         id: user[0].id.toValue(),
