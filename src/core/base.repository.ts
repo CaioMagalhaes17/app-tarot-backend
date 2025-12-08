@@ -10,8 +10,8 @@ export abstract class BaseInfraRepository<InfraModel, DomainModel>
     protected readonly mapper: BaseMapperInterface<InfraModel, DomainModel>,
   ) {}
 
-  async create(data: Partial<DomainModel>): Promise<{ id: string }> {
-    return { id: (await this.model.create(data)).id }
+  async create(data: DomainModel): Promise<{ id: string }> {
+    return { id: (await this.model.create(this.mapper.toPersistance(data))).id }
   }
 
   async findAll(): Promise<DomainModel[]> {
@@ -30,9 +30,8 @@ export abstract class BaseInfraRepository<InfraModel, DomainModel>
   async updateById(
     id: string,
     updateData: DomainModel,
-  ): Promise<DomainModel> {
+  ): Promise<void> {
     await this.model.findByIdAndUpdate(id, this.mapper.toPersistance(updateData))
-    return this.mapper.toDomain(await this.model.findById(id).exec())
   }
 
   async deleteById(id: string): Promise<void> {

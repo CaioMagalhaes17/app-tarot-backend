@@ -78,21 +78,10 @@ export class ClientMinutesRepository extends BaseInfraRepository<
     return teste;
   }
 
-  async updateById(
-    id: string,
-    updateData: ClientMinutesEntity,
-  ): Promise<ClientMinutesEntity> {
+  async updateById(id: string, updateData: ClientMinutesEntity) {
     await this.model.findByIdAndUpdate(
       id,
       this.mapper.toPersistance(updateData),
-    );
-
-    return this.mapper.toDomain(
-      await this.model
-        .findById(id)
-        .populate(['userId', 'transactions.paymentOrder'])
-        .lean()
-        .exec(),
     );
   }
 

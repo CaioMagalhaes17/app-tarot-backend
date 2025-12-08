@@ -30,17 +30,13 @@ export class InMemoryPaymentOrderRepository implements IPaymentOrderRepository {
     if (!this.paymentOrders[topicIndex]) return null;
     return this.paymentOrders[topicIndex];
   }
-  async updateById(
-    id: string,
-    updateData: PaymentOrderEntity,
-  ): Promise<PaymentOrderEntity> {
+  async updateById(id: string, updateData: PaymentOrderEntity) {
     const topicIndex = this.paymentOrders.findIndex(
       (item) => item.id.toString() === id,
     );
     if (this.paymentOrders[topicIndex]) {
       this.paymentOrders[topicIndex] = updateData;
     }
-    return this.paymentOrders[topicIndex];
   }
   async deleteById(id: string): Promise<void> {
     throw new Error('Method not implemented.');

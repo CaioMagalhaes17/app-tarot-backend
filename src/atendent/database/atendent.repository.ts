@@ -1,5 +1,5 @@
 import { BaseInfraRepository } from 'src/core/base.repository';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Atendent } from './atendent.schema';
 import { AtendentEntity } from '../atendent.entity';
 import { AtendentMapper } from './atendent.mapper';
@@ -17,6 +17,25 @@ export class AtendentRepository extends BaseInfraRepository<
 
   async findAll(): Promise<AtendentEntity[]> {
     return this.mapper.toDomainArray(await this.model.find().exec());
+  }
+
+  async findByUserId(userId: string) {
+    const atendent = await this.model
+      .find({ userId: new Types.ObjectId(userId) })
+      .populate('userId')
+      .exec();
+    if (atendent.length === 0) return null;
+    return this.mapper.toDomain(atendent[0]);
+  }
+
+  async findById(id: string) {
+    const atendent = this.mapper.toDomain(
+      await this.model
+        .findById(new Types.ObjectId(id))
+        .populate('userId')
+        .exec(),
+    );
+    return atendent;
   }
 
   async findAllPaginated<T = unknown>(page: number, limit: number, param?: T) {

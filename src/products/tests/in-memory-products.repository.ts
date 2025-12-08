@@ -24,7 +24,7 @@ export class InMemoryProductRepository implements IProductRepository {
   findById(id: string): Promise<ProductEntity> {
     throw new Error('Method not implemented.');
   }
-  updateById(id: string, updateData: ProductEntity): Promise<ProductEntity> {
+  updateById(id: string, updateData: ProductEntity): Promise<void> {
     throw new Error('Method not implemented.');
   }
   deleteById(id: string): Promise<void> {

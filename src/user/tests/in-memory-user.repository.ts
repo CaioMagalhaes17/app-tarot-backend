@@ -40,10 +40,8 @@ export class InMemoryUserRepository implements IUserRepository {
     return this.user;
   }
 
-  async updateById(id: string, updateData: UserEntity): Promise<UserEntity> {
+  async updateById(id: string, updateData: UserEntity) {
     const topicIndex = this.user.findIndex((item) => item.id.toString() === id);
-
     this.user[topicIndex] = updateData;
-    return this.user[topicIndex];
   }
 }

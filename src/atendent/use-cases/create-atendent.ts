@@ -1,27 +1,28 @@
-import { Either, left, right } from 'src/core/Either';
+import { IUserRepository } from 'src/user/database/user.repository.interface';
+import { AtendentEntity, Schedule } from '../atendent.entity';
 import { IAtendentRepository } from '../database/atendent.repository.interface';
-import { AtendentAlreadyExists } from '../errors/AtendentAlreadyExists';
 
-type CreateAtendentUseCaseProps = {
-  specialities: string[];
+type CreateAtendentUseCaseRequest = {
+  bio: string;
+  name: string;
   userId: string;
+  schedule: Schedule;
 };
-
-type CreateAtendentUseCaseResponse = Either<
-  AtendentAlreadyExists,
-  { id: string }
->;
 export class CreateAtendentUseCase {
-  constructor(private atendentRepository: IAtendentRepository) {}
+  constructor(
+    private atendentRepository: IAtendentRepository,
+    private userRepository: IUserRepository,
+  ) {}
 
-  async execute(
-    data: CreateAtendentUseCaseProps,
-  ): Promise<CreateAtendentUseCaseResponse> {
-    const atendent = await this.atendentRepository.findByParam<{
-      userId: string;
-    }>({ userId: data.userId });
-    if (atendent.length > 0) return left(new AtendentAlreadyExists());
-    const result = await this.atendentRepository.create(data);
-    return right(result);
+  async execute(props: CreateAtendentUseCaseRequest) {
+    const user = await this.userRepository.findById(props.userId);
+    const atendent = AtendentEntity.create({
+      bio: props.bio,
+      name: props.name,
+      rating: 0,
+      schedule: props.schedule,
+      user,
+    });
+    await this.atendentRepository.create(atendent);
   }
 }

@@ -6,10 +6,13 @@ import { IAtendentRepository } from './database/atendent.repository.interface';
 import { AtendentRepository } from './database/atendent.repository';
 import { GetAtendentByIdUseCases } from './use-cases/get-atendent-by-id';
 import { CreateAtendentUseCase } from './use-cases/create-atendent';
+import { IUserRepository } from 'src/user/database/user.repository.interface';
+import { UserRepository } from 'src/user/database/user.repository';
+import { UserDatabaseModule } from 'src/user/database/user.database.module';
 import { UpdateAtendentUseCase } from './use-cases/update-atendent';
 
 @Module({
-  imports: [AtendentDatabaseModule],
+  imports: [AtendentDatabaseModule, UserDatabaseModule],
   controllers: [AtendentController],
   providers: [
     {
@@ -28,10 +31,13 @@ import { UpdateAtendentUseCase } from './use-cases/update-atendent';
     },
     {
       provide: CreateAtendentUseCase,
-      useFactory: (servicesRepository: IAtendentRepository) => {
-        return new CreateAtendentUseCase(servicesRepository);
+      useFactory: (
+        servicesRepository: IAtendentRepository,
+        userRepository: IUserRepository,
+      ) => {
+        return new CreateAtendentUseCase(servicesRepository, userRepository);
       },
-      inject: [AtendentRepository],
+      inject: [AtendentRepository, UserRepository],
     },
     {
       provide: UpdateAtendentUseCase,

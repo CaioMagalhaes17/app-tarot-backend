@@ -16,8 +16,7 @@ import { GetAtendentByIdUseCases } from './use-cases/get-atendent-by-id';
 import { AtendentNotFound } from './errors/AtendentNotFound';
 import { JwtAuthGuard } from 'src/infra/auth/guards/jwt.guard';
 import { CreateAtendentUseCase } from './use-cases/create-atendent';
-import { AtendentAlreadyExists } from './errors/AtendentAlreadyExists';
-import { AtendentEntity } from './atendent.entity';
+import { CreateAtendentDTO } from './schema/create-atendent.schema';
 import { UpdateAtendentUseCase } from './use-cases/update-atendent';
 
 @Controller()
@@ -25,8 +24,8 @@ export class AtendentController {
   constructor(
     private getAtendentsUseCases: GetAtendentsUseCases,
     private getAtendentById: GetAtendentByIdUseCases,
-    private createAtendent: CreateAtendentUseCase,
-    private updateAtendent: UpdateAtendentUseCase,
+    private createAtendentUseCase: CreateAtendentUseCase,
+    private updateAtendentUseCase: UpdateAtendentUseCase,
   ) {}
 
   @Get('/atendent')
@@ -56,42 +55,25 @@ export class AtendentController {
   @Post('/atendent')
   async postCreateAtendent(
     @Req() req: { user: { id: string } },
-    @Body() data: { specialities: string[] },
+    @Body() data: CreateAtendentDTO,
   ) {
-    const result = await this.createAtendent.execute({
-      specialities: data.specialities,
+    const result = await this.createAtendentUseCase.execute({
       userId: req.user.id,
+      bio: data.bio,
+      name: data.name,
+      schedule: data.schedule,
     });
-
-    if (result.isLeft()) {
-      switch (result.value.constructor) {
-        case AtendentAlreadyExists:
-          throw new BadRequestException(result.value.message);
-        default:
-          throw new BadRequestException('Erro não tratado');
-      }
-    }
 
     return result;
   }
 
   @UseGuards(JwtAuthGuard)
-  @Put('/atendent/:id')
+  @Put('/atendent')
   async putUpdateAtendent(
     @Req() req: { user: { id: string } },
-    @Body() data: Partial<AtendentEntity>,
+    @Body() data: Partial<CreateAtendentDTO>,
   ) {
-    const result = await this.updateAtendent.execute(req.user.id, data);
-
-    if (result.isLeft()) {
-      switch (result.value.constructor) {
-        case AtendentNotFound:
-          throw new BadRequestException(result.value.message);
-        default:
-          throw new BadRequestException('Erro não tratado');
-      }
-    }
-
+    const result = await this.updateAtendentUseCase.execute(req.user.id, data);
     return result;
   }
 }

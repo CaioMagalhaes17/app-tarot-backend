@@ -2,17 +2,28 @@ import { BaseEntity } from 'src/core/base.entity';
 import { UniqueEntityID } from 'src/core/unique-entity-id';
 import { UserEntity } from 'src/user/user.entity';
 
-type AvaliableServicesProps = {
-  price: string;
-  isActive: boolean;
-  serviceId: string;
+export type WorkRange = {
+  start: string;
+  end: string;
 };
 
+export type Weekday =
+  | 'sunday'
+  | 'monday'
+  | 'tuesday'
+  | 'wednesday'
+  | 'thursday'
+  | 'friday'
+  | 'saturday';
+
+export type Schedule = Record<Weekday, WorkRange[]>;
+
 type AtendentProps = {
-  avaliableServices: AvaliableServicesProps[];
-  specialities: string[];
-  userId: string;
   user: UserEntity;
+  name: string;
+  bio: string;
+  rating: number;
+  schedule: Schedule;
 };
 
 export class AtendentEntity extends BaseEntity<AtendentProps> {
@@ -20,28 +31,41 @@ export class AtendentEntity extends BaseEntity<AtendentProps> {
     return new AtendentEntity(props, new UniqueEntityID(id));
   }
 
-  get specialities(): string[] {
-    return this.props.specialities;
-  }
-
-  get userId(): string {
-    return this.props.userId;
-  }
-
   get user(): UserEntity {
     return this.props.user;
   }
 
-  get avaliableServices(): AvaliableServicesProps[] {
-    return this.props.avaliableServices;
+  get name() {
+    return this.props.name;
   }
 
-  update(data: Partial<AtendentEntity>) {
-    if (data.avaliableServices) {
-      this.props.avaliableServices = data.avaliableServices;
+  get bio() {
+    return this.props.bio;
+  }
+
+  get rating() {
+    return this.props.rating;
+  }
+
+  get schedule() {
+    return this.props.schedule;
+  }
+
+  update(props: Partial<AtendentEntity>) {
+    if (props.bio) {
+      this.props.bio = props.bio;
     }
-    if (data.specialities) {
-      this.props.specialities = data.specialities;
+
+    if (props.rating) {
+      this.props.rating = props.rating;
+    }
+
+    if (props.name) {
+      this.props.name = props.name;
+    }
+
+    if (props.schedule) {
+      this.props.schedule = props.schedule;
     }
   }
 }

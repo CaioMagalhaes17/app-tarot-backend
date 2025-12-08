@@ -19,6 +19,6 @@ import { UserRepository } from './user.repository';
       inject: [getModelToken(User.name), UserMapper],
     },
   ],
-  exports: [UserRepository],
+  exports: [UserRepository, UserMapper],
 })
 export class UserDatabaseModule {}

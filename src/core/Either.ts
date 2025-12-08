@@ -41,3 +41,5 @@ export const left = <L, R>(value: L): Either<L, R> => {
 export const right = <L, R>(value: R): Either<L, R> => {
   return new Right(value);
 };
+
+export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;

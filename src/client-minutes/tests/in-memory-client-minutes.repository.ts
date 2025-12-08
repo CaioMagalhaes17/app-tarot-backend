@@ -52,15 +52,11 @@ export class InMemoryClientMinutesRepository
     return this.clientMinutes;
   }
 
-  async updateById(
-    id: string,
-    updateData: ClientMinutesEntity,
-  ): Promise<ClientMinutesEntity> {
+  async updateById(id: string, updateData: ClientMinutesEntity) {
     const topicIndex = this.clientMinutes.findIndex(
       (item) => item.id.toString() === id,
     );
 
     this.clientMinutes[topicIndex] = updateData;
-    return this.clientMinutes[topicIndex];
   }
 }

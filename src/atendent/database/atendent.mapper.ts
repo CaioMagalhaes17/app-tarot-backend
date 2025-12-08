@@ -1,17 +1,19 @@
 import { BaseMapperInterface } from 'src/core/base.mapper.interface';
 import { Atendent } from './atendent.schema';
 import { AtendentEntity } from '../atendent.entity';
+import { UserMapper } from 'src/user/database/user.mapper';
 
 export class AtendentMapper
   implements BaseMapperInterface<Atendent, AtendentEntity> {
+  constructor(private userMapper: UserMapper) {}
   toDomain(row: Atendent): AtendentEntity {
     if (!row) return;
     const { _id, ...rest } = row.toObject();
+    const user = row.userId as any;
     return AtendentEntity.create(
       {
         ...rest,
-        user: row.userId,
-        userId: row.userId._id,
+        user: this.userMapper.toDomain(user),
       },
       _id,
     );
@@ -26,7 +28,12 @@ export class AtendentMapper
 
   toPersistance(domain: AtendentEntity): Record<string, any> {
     return {
-      toBeImplemented: '',
+      id: domain.id.toString(),
+      bio: domain.bio,
+      name: domain.name,
+      rating: domain.rating,
+      schedule: domain.schedule,
+      userId: domain.user.id.toString(),
     };
   }
 }
