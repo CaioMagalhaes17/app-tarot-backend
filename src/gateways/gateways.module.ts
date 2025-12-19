@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { PaymentGateway } from './payment/payment-gateway';
 import { StripeGateway } from './payment/stripe-gateway';
 import { EventGateway } from './events/event.gateway';
@@ -17,7 +17,7 @@ import { ProcessAppointmentPaymentUseCase } from 'src/appointment/use-cases/proc
 
 @Module({
   // ClientMinutesModule removed - module is no longer used
-  imports: [AppointmentModule],
+  imports: [forwardRef(() => AppointmentModule)],
   providers: [
     {
       provide: PaymentGateway,
@@ -38,7 +38,7 @@ import { ProcessAppointmentPaymentUseCase } from 'src/appointment/use-cases/proc
           processAppointmentPaymentUseCase,
         );
       },
-      inject: [ProcessAppointmentPaymentUseCase],
+      inject: [forwardRef(() => ProcessAppointmentPaymentUseCase)],
     },
     {
       provide: PaymentOrderFailedFactory,

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { UserDatabaseModule } from 'src/user/database/user.database.module';
 import { AppointmentDatabaseModule } from './database/appointment.database.module';
 import { AtendentServicesDatabaseModule } from 'src/atendent-services/database/atendent-services.database.module';
@@ -29,7 +29,7 @@ import { PaymentOrderRepository } from 'src/payment/database/payment-order.repos
     UserDatabaseModule,
     AppointmentDatabaseModule,
     AtendentServicesDatabaseModule,
-    PaymentOrderModule,
+    forwardRef(() => PaymentOrderModule),
     AtendentDatabaseModule,
   ],
   controllers: [AppointmentController],
@@ -91,7 +91,7 @@ import { PaymentOrderRepository } from 'src/payment/database/payment-order.repos
       },
       inject: [
         AtendentServicesRepository,
-        CreatePaymentOrderUseCase,
+        forwardRef(() => CreatePaymentOrderUseCase),
         AppointmentRepository,
         AtendentRepository,
       ],
