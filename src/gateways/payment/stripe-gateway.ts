@@ -16,6 +16,7 @@ export class StripeGateway extends PaymentGateway {
   async createPaymentOrder(
     userId: string,
     amount: number,
+    description?: string,
   ): Promise<Either<CreatePaymentOrderError, PaymentOrder>> {
     try {
       const paymentIntent = await this.stripe.paymentIntents.create({
@@ -30,7 +31,7 @@ export class StripeGateway extends PaymentGateway {
         status: this.mapStatus(paymentIntent.status),
         createdAt: new Date(),
         externalId: paymentIntent.id,
-        clientSecret: paymentIntent.client_secret,
+        checkoutUrl: '', // Stripe não usa checkoutUrl, mas mantém compatibilidade
       });
     } catch (error) {
       console.log('LOGGER', error.raw.code, error.raw.message);
@@ -51,7 +52,7 @@ export class StripeGateway extends PaymentGateway {
       status: this.mapStatus(paymentIntent.status),
       createdAt: new Date(),
       externalId: paymentIntent.id,
-      clientSecret: paymentIntent.client_secret,
+      checkoutUrl: '', // Stripe não usa checkoutUrl, mas mantém compatibilidade
     });
   }
 

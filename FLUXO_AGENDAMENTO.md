@@ -284,13 +284,15 @@ Retorna: {
 - Cliente solicita criação do pagamento
 - Sistema valida novamente a disponibilidade (dupla validação)
 - Sistema cria `PaymentOrder` com metadados do agendamento
-- Sistema retorna `clientSecret` do Stripe para processamento do pagamento
+- Sistema cria preferência de pagamento no Mercado Pago
+- Sistema retorna `checkoutUrl` (URL do Checkout Pro do Mercado Pago)
 
 **Etapa 5: Confirmação do Pagamento e Criação do Agendamento**
 
-- Cliente realiza pagamento no frontend usando `clientSecret`
-- Stripe processa o pagamento e envia webhook
-- Sistema recebe webhook de confirmação
+- Frontend redireciona cliente para `checkoutUrl` (Checkout Pro do Mercado Pago)
+- Cliente realiza pagamento no site do Mercado Pago
+- Mercado Pago processa o pagamento e envia webhook
+- Sistema recebe webhook de confirmação do Mercado Pago
 - Sistema cria `Appointment` automaticamente após confirmação do pagamento
 
 #### 3.2. Criação do Payment Order para Agendamento
@@ -310,17 +312,19 @@ Processo interno:
 2. Valida se a data não está no passado
 3. Valida disponibilidade do atendente (primeira validação)
 4. Verifica se o horário escolhido está disponível
-5. Cria PaymentOrder com:
+5. Cria preferência de pagamento no Mercado Pago (Checkout Pro)
+6. Cria PaymentOrder com:
    - amount: preço do atendentService
    - productType: "appointment"
    - description: JSON com metadados do agendamento
-6. Retorna { id, externalId, clientSecret }
+   - externalId: ID da preferência do Mercado Pago
+7. Retorna { id, externalId, checkoutUrl }
 
 Resposta:
 {
   id: "payment_order_id",
-  externalId: "pi_stripe_id",
-  clientSecret: "pi_xxx_secret_xxx"
+  externalId: "preference_id_mercado_pago",
+  checkoutUrl: "https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=..."
 }
 ```
 
@@ -329,11 +333,14 @@ Resposta:
 ```
 Fluxo automático após pagamento confirmado:
 
-1. Stripe envia webhook: payment_intent.succeeded
-2. Sistema atualiza PaymentOrder.status = "completed"
-3. Sistema publica evento: PaymentOrderSucceed
-4. PaymentOrderCompletedFactory identifica productType = "appointment"
-5. ProcessAppointmentPaymentUseCase é executado:
+1. Mercado Pago envia webhook: payment (tipo de evento)
+2. Sistema busca o pagamento no Mercado Pago usando o payment_id
+3. Sistema identifica a preferência associada ao pagamento
+4. Sistema busca PaymentOrder usando o preference_id como externalId
+5. Sistema atualiza PaymentOrder.status = "completed"
+6. Sistema publica evento: PaymentOrderSucceed
+7. PaymentOrderCompletedFactory identifica productType = "appointment"
+8. ProcessAppointmentPaymentUseCase é executado:
    - Valida se pagamento está completed
    - Verifica idempotência (se já existe appointment)
    - Extrai metadados do description
@@ -476,13 +483,16 @@ Payload: {
 5. Cliente escolhe serviço e horário
    (Frontend: seleção de AtendentService + data/hora)
 
-6. Cliente realiza pagamento
-   (Stripe: processamento do pagamento)
+6. Cliente solicita criação do pagamento
+   POST /appointment/payment → Retorna checkoutUrl
 
-7. Sistema cria agendamento
-   POST /appointment/schedule → Appointment criado
+7. Frontend redireciona cliente para checkoutUrl (Mercado Pago Checkout Pro)
+   Cliente realiza pagamento no site do Mercado Pago
 
-8. Cliente visualiza agendamento
+8. Mercado Pago processa pagamento e envia webhook
+   Sistema recebe webhook e cria Appointment automaticamente
+
+9. Cliente visualiza agendamento
    GET /appointment/by-user → Lista de agendamentos
 ```
 
@@ -575,11 +585,12 @@ POST /appointment/payment
   startTime: "10:00",
   endTime: "10:30"
 }
-// Retorna: { id: "payment_order_id", externalId: "pi_xxx", clientSecret: "pi_xxx_secret_xxx" }
+// Retorna: { id: "payment_order_id", externalId: "preference_id", checkoutUrl: "https://..." }
 
-// 5. Frontend processa pagamento com clientSecret (Stripe)
-// 6. Stripe envia webhook de confirmação
-// 7. Sistema cria Appointment automaticamente após confirmação
+// 5. Frontend redireciona cliente para checkoutUrl (Mercado Pago Checkout Pro)
+// 6. Cliente realiza pagamento no site do Mercado Pago
+// 7. Mercado Pago envia webhook de confirmação
+// 8. Sistema cria Appointment automaticamente após confirmação
 ```
 
 ---
@@ -606,13 +617,14 @@ POST /appointment/payment
 
 - `POST /appointment/payment` - Criar payment order para agendamento (autenticado)
   - Valida disponibilidade antes de criar o pagamento
-  - Retorna `clientSecret` para processamento no frontend
+  - Cria preferência de pagamento no Mercado Pago (Checkout Pro)
+  - Retorna `checkoutUrl` para redirecionamento do cliente
 - `POST /appointment/schedule` - Criar agendamento diretamente (legado - não recomendado)
 - `GET /appointment/by-user` - Meus agendamentos (autenticado)
 - `GET /appointment/by-atendent/:id` - Agendamentos do atendente (autenticado)
 - `PUT /appointment/:id` - Atualizar agendamento (autenticado)
 
-**Nota:** O agendamento é criado automaticamente após confirmação do pagamento via webhook do Stripe.
+**Nota:** O agendamento é criado automaticamente após confirmação do pagamento via webhook do Mercado Pago.
 
 ---
 
@@ -620,7 +632,7 @@ POST /appointment/payment
 
 ---
 
-## 💳 Fluxo de Pagamento Detalhado
+## 💳 Fluxo de Pagamento Detalhado (Mercado Pago Checkout Pro)
 
 ### **Arquitetura do Fluxo de Pagamento**
 
@@ -640,31 +652,39 @@ POST /appointment/payment
 │ - Valida disponibilidade    │
 └──────┬──────────────────────┘
        │
-       │ 2. Cria PaymentOrder
+       │ 2. Cria preferência no Mercado Pago
+       │    - Cria PaymentOrder
        │    - amount: preço do serviço
        │    - description: JSON com metadados
        │    - productType: "appointment"
+       │    - externalId: preference_id do Mercado Pago
        ▼
 ┌─────────────────────────────┐
 │   PaymentOrder (pending)    │
-│   + clientSecret (Stripe)   │
+│   + checkoutUrl (Mercado    │
+│     Pago Checkout Pro)      │
 └──────┬──────────────────────┘
        │
-       │ 3. Frontend processa pagamento
-       │    usando clientSecret
+       │ 3. Frontend redireciona cliente
+       │    para checkoutUrl
        ▼
 ┌─────────────────────────────┐
-│        Stripe API           │
-│   (processa pagamento)      │
+│   Mercado Pago Checkout Pro │
+│   (cliente paga no site     │
+│    do Mercado Pago)         │
 └──────┬──────────────────────┘
        │
-       │ 4. Webhook: payment_intent.succeeded
+       │ 4. Webhook: payment (tipo de evento)
+       │    - Mercado Pago envia payment_id
        ▼
 ┌─────────────────────────────┐
-│ PaymentIntentSucceeded      │
+│ MercadoPagoPaymentSucceeded │
 │ UseCase                     │
+│ - Busca pagamento no MP      │
+│ - Identifica preference_id  │
+│ - Busca PaymentOrder         │
 │ - Atualiza status = completed│
-│ - Publica evento            │
+│ - Publica evento             │
 └──────┬──────────────────────┘
        │
        │ 5. Event: PaymentOrderSucceed
@@ -721,3 +741,27 @@ O campo `description` do `PaymentOrder` armazena um JSON com os metadados do age
 - **Horário ocupado entre validações**: Segunda validação detecta e retorna erro
 - **Webhook duplicado**: Idempotência garante que não cria appointment duplicado
 - **Metadados inválidos**: Erro retornado, pagamento fica como completed mas sem appointment
+
+### **Configuração do Mercado Pago**
+
+Para utilizar o sistema de pagamento, é necessário configurar as seguintes variáveis de ambiente:
+
+```env
+# Mercado Pago
+MERCADO_PAGO_ACCESS_TOKEN=seu_access_token_aqui
+
+# URLs de retorno após pagamento
+MERCADO_PAGO_SUCCESS_URL=https://seu-site.com/pagamento/sucesso
+MERCADO_PAGO_FAILURE_URL=https://seu-site.com/pagamento/falha
+MERCADO_PAGO_PENDING_URL=https://seu-site.com/pagamento/pendente
+
+# URL do webhook (deve ser acessível publicamente)
+MERCADO_PAGO_WEBHOOK_URL=https://seu-backend.com/webhooks/mercado-pago
+```
+
+**Importante:**
+
+- O webhook deve ser configurado no painel do Mercado Pago apontando para `/webhooks/mercado-pago`
+- As URLs de retorno devem ser configuradas no frontend para redirecionar o cliente após o pagamento
+- O `externalId` do `PaymentOrder` armazena o `preference_id` do Mercado Pago
+- O webhook do Mercado Pago envia o `payment_id`, que é usado para buscar a preferência associada

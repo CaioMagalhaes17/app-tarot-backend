@@ -89,6 +89,8 @@ import { PaymentFailedMessageFactory } from './factories/payment-failed-message.
     PaymentIntentSucceededUseCase,
     PaymentIntentOrderFailedUseCase,
     CreatePaymentOrderUseCase,
+    PaymentOrderRepository,
+    EventGateway,
   ],
 })
 export class PaymentOrderModule {}
