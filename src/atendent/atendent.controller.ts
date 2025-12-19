@@ -19,6 +19,7 @@ import { CreateAtendentUseCase } from './use-cases/create-atendent';
 import { CreateAtendentDTO } from './schema/create-atendent.schema';
 import { UpdateAtendentUseCase } from './use-cases/update-atendent';
 import { AtendentPresenter } from './atendent.presenter';
+import { GetAvailabilityUseCase } from './use-cases/get-availability';
 
 @Controller()
 export class AtendentController {
@@ -27,6 +28,7 @@ export class AtendentController {
     private getAtendentById: GetAtendentByIdUseCases,
     private createAtendentUseCase: CreateAtendentUseCase,
     private updateAtendentUseCase: UpdateAtendentUseCase,
+    private getAvailabilityUseCase: GetAvailabilityUseCase,
   ) {}
 
   @Get('/atendent')
@@ -89,5 +91,32 @@ export class AtendentController {
   ) {
     const result = await this.updateAtendentUseCase.execute(req.user.id, data);
     return result;
+  }
+
+  @Get('/atendent/:id/availability')
+  async getAvailability(
+    @Param('id') id: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+  ) {
+    const parsedStartDate = startDate ? new Date(startDate) : undefined;
+    const parsedEndDate = endDate ? new Date(endDate) : undefined;
+
+    const result = await this.getAvailabilityUseCase.execute(
+      id,
+      parsedStartDate,
+      parsedEndDate,
+    );
+
+    if (result.isLeft()) {
+      switch (result.value.constructor) {
+        case AtendentNotFound:
+          throw new NotFoundException(result.value.message);
+        default:
+          throw new BadRequestException('Erro ao buscar disponibilidade');
+      }
+    }
+
+    return result.value;
   }
 }

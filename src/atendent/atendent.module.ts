@@ -10,9 +10,17 @@ import { IUserRepository } from 'src/user/database/user.repository.interface';
 import { UserRepository } from 'src/user/database/user.repository';
 import { UserDatabaseModule } from 'src/user/database/user.database.module';
 import { UpdateAtendentUseCase } from './use-cases/update-atendent';
+import { GetAvailabilityUseCase } from './use-cases/get-availability';
+import { AppointmentDatabaseModule } from 'src/appointment/database/appointment.database.module';
+import { IAppointmentRepository } from 'src/appointment/database/appointment.repository.interface';
+import { AppointmentRepository } from 'src/appointment/database/appointment.repository';
 
 @Module({
-  imports: [AtendentDatabaseModule, UserDatabaseModule],
+  imports: [
+    AtendentDatabaseModule,
+    UserDatabaseModule,
+    AppointmentDatabaseModule,
+  ],
   controllers: [AtendentController],
   providers: [
     {
@@ -45,6 +53,19 @@ import { UpdateAtendentUseCase } from './use-cases/update-atendent';
         return new UpdateAtendentUseCase(servicesRepository);
       },
       inject: [AtendentRepository],
+    },
+    {
+      provide: GetAvailabilityUseCase,
+      useFactory: (
+        atendentRepository: IAtendentRepository,
+        appointmentRepository: IAppointmentRepository,
+      ) => {
+        return new GetAvailabilityUseCase(
+          atendentRepository,
+          appointmentRepository,
+        );
+      },
+      inject: [AtendentRepository, AppointmentRepository],
     },
   ],
 })

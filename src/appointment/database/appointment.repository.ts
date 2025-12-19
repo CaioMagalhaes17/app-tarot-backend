@@ -106,7 +106,56 @@ export class AppointmentRepository extends BaseInfraRepository<
     return atendent;
   }
 
-  async;
+  async findAppointmentsByAtendentIdAndDateRange(
+    atendentId: string,
+    startDate: Date,
+    endDate: Date,
+  ) {
+    // Primeiro, busca os atendentServices do atendente usando a collection diretamente
+    // O Mongoose cria collections com nomes em minúsculas e no plural
+    const atendentServicesCollection = this.model.db.collection(
+      'atendentservices',
+    );
+    const atendentServicesDocs = await atendentServicesCollection
+      .find({ atendentId: new Types.ObjectId(atendentId) })
+      .project({ _id: 1 })
+      .toArray();
+
+    const serviceIds = atendentServicesDocs.map((doc) => doc._id);
+
+    if (serviceIds.length === 0) {
+      return [];
+    }
+
+    // Agora busca os appointments que usam esses services
+    const appointments = await this.model
+      .find({
+        atendentServiceId: { $in: serviceIds },
+        date: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+        status: { $ne: 'canceled' },
+      })
+      .populate([
+        'userId',
+        {
+          path: 'atendentServiceId',
+          populate: [
+            {
+              path: 'atendentId',
+              populate: 'userId',
+            },
+            {
+              path: 'serviceId',
+            },
+          ],
+        },
+      ])
+      .exec();
+
+    return this.mapper.toDomainArray(appointments);
+  }
 
   async findAllPaginated<T = unknown>(page: number, limit: number, param?: T) {
     const skip = (page - 1) * limit;

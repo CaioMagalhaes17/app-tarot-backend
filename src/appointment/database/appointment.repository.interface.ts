@@ -7,4 +7,9 @@ export interface IAppointmentRepository
   findAppointmentsByAtendentId(
     atendentId: string,
   ): Promise<AppointmentEntity[]>;
+  findAppointmentsByAtendentIdAndDateRange(
+    atendentId: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<AppointmentEntity[]>;
 }
