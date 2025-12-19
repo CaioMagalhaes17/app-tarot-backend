@@ -17,6 +17,7 @@ import { JwtAuthGuard } from 'src/infra/auth/guards/jwt.guard';
 import { FetchAtendentServices } from './use-cases/fetch-all-atendent-services';
 import { FetchAllAtendentServicesByService } from './use-cases/fetch-all-atendent-services-by-service';
 import { UpdateAtendentServiceUseCase } from './use-cases/update-service';
+import { AtendentServicesPresenter } from './atendent-services.presenter';
 
 @Controller('atendent-service')
 export class AtendentServicesController {
@@ -72,20 +73,26 @@ export class AtendentServicesController {
   @Get('by-atendent/:id')
   async fetchAtendentServices(@Param('id') id: string) {
     const response = await this.fetchAtendentServicesUseCase.execute(id);
-    return response;
+    return AtendentServicesPresenter.toHttpArray(response);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async fetchById(@Param('id') id: string) {
     const response = await this.fetchAtendentServiceById.execute(id);
-    return response;
+    if (!response) {
+      throw new BadRequestException('Serviço não encontrado');
+    }
+    return AtendentServicesPresenter.toHttp(response);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('by-service/:id')
   async fetchByService(@Param('id') id: string) {
     const response = await this.fetchAllAtendentServicesByService.execute(id);
-    return response;
+    if (!response) {
+      throw new BadRequestException('Serviço não encontrado');
+    }
+    return AtendentServicesPresenter.toHttp(response);
   }
 }
