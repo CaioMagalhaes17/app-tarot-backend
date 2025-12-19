@@ -32,6 +32,7 @@ export class MercadoPagoGateway extends PaymentGateway {
       const preferenceData = {
         items: [
           {
+            id: `item_${Date.now()}_${userId}`,
             title: description || 'Pagamento',
             quantity: 1,
             unit_price: amount,
