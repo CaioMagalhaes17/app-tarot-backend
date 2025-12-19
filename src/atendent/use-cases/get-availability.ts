@@ -154,7 +154,7 @@ export class GetAvailabilityUseCase {
       let currentSlotStart = periodStart;
 
       while (currentSlotStart < periodEnd) {
-        const slotEnd = Math.min(currentSlotStart + 30, periodEnd);
+        const slotEnd = Math.min(currentSlotStart + 60, periodEnd);
         const slotStartTime = this.minutesToTime(currentSlotStart);
         const slotEndTime = this.minutesToTime(slotEnd);
 
@@ -197,4 +197,3 @@ export class GetAvailabilityUseCase {
     return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
   }
 }
-
