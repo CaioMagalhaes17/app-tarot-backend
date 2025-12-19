@@ -28,7 +28,7 @@ export class CreateAppointmentPaymentOrderUseCase {
   ): Promise<
     Either<
       ResourceNotFoundError | Error,
-      { id: string; externalId: string; clientSecret: string }
+      { id: string; externalId: string; checkoutUrl: string }
     >
   > {
     // 1. Validar se atendentService existe e está ativo

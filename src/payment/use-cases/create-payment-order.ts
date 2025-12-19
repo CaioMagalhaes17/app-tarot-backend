@@ -25,7 +25,7 @@ export class CreatePaymentOrderUseCase {
   }): Promise<
     Either<
       Error | UserNotFound,
-      { id: string; externalId: string; clientSecret: string }
+      { id: string; externalId: string; checkoutUrl: string }
     >
   > {
     const user = await this.userRepository.findById(userId);
@@ -33,6 +33,7 @@ export class CreatePaymentOrderUseCase {
     const gatewayResponse = await this.paymentGateway.createPaymentOrder(
       userId,
       amount,
+      description,
     );
     if (gatewayResponse.isLeft()) {
       return left(
@@ -54,7 +55,7 @@ export class CreatePaymentOrderUseCase {
     return right({
       id: response.id,
       externalId: gatewayResponse.value.externalId,
-      clientSecret: gatewayResponse.value.clientSecret,
+      checkoutUrl: gatewayResponse.value.checkoutUrl,
     });
   }
 }

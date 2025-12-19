@@ -6,13 +6,14 @@ export interface PaymentOrder {
   amount: number;
   status: 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
   createdAt: Date;
-  clientSecret: string;
+  checkoutUrl: string; // URL para redirecionar o cliente (Checkout Pro)
 }
 
 export abstract class PaymentGateway {
   abstract createPaymentOrder(
     userId: string,
     amount: number,
+    description?: string,
   ): Promise<Either<CreatePaymentOrderError, PaymentOrder>>;
 
   abstract getPaymentStatus(

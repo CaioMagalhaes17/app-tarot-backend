@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { PaymentOrderDatabaseModule } from './database/payment-oder.module';
 import { PaymentOrderController } from './payment-oder.controller';
 import { CreatePaymentOrderUseCase } from './use-cases/create-payment-order';
@@ -16,7 +16,11 @@ import { PaymentIntentOrderFailedUseCase } from './use-cases/events/payment-inte
 import { PaymentFailedMessageFactory } from './factories/payment-failed-message.factory';
 
 @Module({
-  imports: [PaymentOrderDatabaseModule, UserDatabaseModule, GatewaysModule],
+  imports: [
+    PaymentOrderDatabaseModule,
+    UserDatabaseModule,
+    forwardRef(() => GatewaysModule),
+  ],
   controllers: [PaymentOrderController],
   providers: [
     PaymentFailedMessageFactory,
@@ -85,6 +89,8 @@ import { PaymentFailedMessageFactory } from './factories/payment-failed-message.
     PaymentIntentSucceededUseCase,
     PaymentIntentOrderFailedUseCase,
     CreatePaymentOrderUseCase,
+    PaymentOrderRepository,
+    EventGateway,
   ],
 })
 export class PaymentOrderModule {}
