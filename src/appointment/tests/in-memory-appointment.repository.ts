@@ -52,6 +52,15 @@ export class InMemoryAppointmentRepository implements IAppointmentRepository {
     });
   }
 
+  async findByPaymentOrderId(
+    paymentOrderId: string,
+  ): Promise<AppointmentEntity | null> {
+    const appointment = this.appointments.find(
+      (item) => item.paymentOrderId === paymentOrderId,
+    );
+    return appointment || null;
+  }
+
   async updateById(id: string, updateData: AppointmentEntity): Promise<void> {
     const index = this.appointments.findIndex(
       (item) => item.id.toString() === id,

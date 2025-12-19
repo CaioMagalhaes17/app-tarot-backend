@@ -157,6 +157,32 @@ export class AppointmentRepository extends BaseInfraRepository<
     return this.mapper.toDomainArray(appointments);
   }
 
+  async findByPaymentOrderId(
+    paymentOrderId: string,
+  ): Promise<AppointmentEntity | null> {
+    const appointment = await this.model
+      .findOne({ paymentOrderId: new Types.ObjectId(paymentOrderId) })
+      .populate([
+        'userId',
+        {
+          path: 'atendentServiceId',
+          populate: [
+            {
+              path: 'atendentId',
+              populate: 'userId',
+            },
+            {
+              path: 'serviceId',
+            },
+          ],
+        },
+      ])
+      .exec();
+
+    if (!appointment) return null;
+    return this.mapper.toDomain(appointment);
+  }
+
   async findAllPaginated<T = unknown>(page: number, limit: number, param?: T) {
     const skip = (page - 1) * limit;
     const [data, total] = await Promise.all([
