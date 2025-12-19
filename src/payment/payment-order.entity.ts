@@ -1,6 +1,5 @@
 import { BaseEntity } from 'src/core/base.entity';
 import { UniqueEntityID } from 'src/core/unique-entity-id';
-import { ProductEntityProps } from 'src/products/product-entity';
 
 export type ErrorDescription =
   | 'Cartão recusado'
@@ -14,13 +13,16 @@ export type OrderStatus =
   | 'failed'
   | 'cancelled';
 
+// ProductCategory moved here - products module removed
+export type ProductCategory = 'appointment';
+
 export interface PaymentOrderEntityProps {
   userId: string;
   type: OrderType;
   amount: number;
   status: OrderStatus;
   createdAt: Date;
-  productType: ProductEntityProps['category'];
+  productType: ProductCategory;
   updatedAt?: Date;
   description?: string;
   errorDescription?: ErrorDescription;

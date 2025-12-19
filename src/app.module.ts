@@ -7,12 +7,14 @@ import { EmailModule } from './email/email.module';
 import { ServicesModule } from './services/services.module';
 import { AtendentModule } from './atendent/atendent.module';
 import { FeedbacksModule } from './feedbacks/feedbacks.module';
-import { ClientMinutesModule } from './client-minutes/client-minutes.module';
+// ClientMinutesModule removed - module is no longer used
+// import { ClientMinutesModule } from './client-minutes/client-minutes.module';
+// ProductModule removed - module is no longer used
+// import { ProductModule } from './products/product.module';
 import { PaymentOrderModule } from './payment/payment-order.module';
 import { WebhooksModule } from './webhooks/webhooks.module';
 import { GatewaysModule } from './gateways/gateways.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { ProductModule } from './products/product.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { AtendentServicesModule } from './atendent-services/atendent-services.module';
 
@@ -20,7 +22,7 @@ import { AtendentServicesModule } from './atendent-services/atendent-services.mo
   imports: [
     EventEmitterModule.forRoot({}),
     GatewaysModule,
-    ProductModule,
+    // ProductModule removed - module is no longer used
     InfraModule,
     UserModule,
     MongoModule,
@@ -28,7 +30,7 @@ import { AtendentServicesModule } from './atendent-services/atendent-services.mo
     ServicesModule,
     AtendentModule,
     FeedbacksModule,
-    ClientMinutesModule,
+    // ClientMinutesModule removed - module is no longer used
     PaymentOrderModule,
     WebhooksModule,
     AppointmentModule,

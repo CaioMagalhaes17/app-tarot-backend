@@ -1,7 +1,7 @@
-import { AddMinutesTransactionUseCase } from 'src/client-minutes/use-cases/events/add-minutes-transaction';
+// ClientMinutesModule removed - module is no longer used
+// import { AddMinutesTransactionUseCase } from 'src/client-minutes/use-cases/events/add-minutes-transaction';
 import { Either } from 'src/core/Either';
-import { PaymentOrderEntity } from 'src/payment/payment-order.entity';
-import { ProductCategory } from 'src/products/product-entity';
+import { PaymentOrderEntity, ProductCategory } from 'src/payment/payment-order.entity';
 
 type UseCase = {
   execute(paymentOrder: PaymentOrderEntity): Promise<Either<any, any>>;
@@ -9,13 +9,15 @@ type UseCase = {
 
 export class PaymentOrderCompletedFactory {
   constructor(
-    private readonly addMinutesTransactionUseCase: AddMinutesTransactionUseCase,
+    // ClientMinutesModule removed - no longer using AddMinutesTransactionUseCase
+    private readonly addMinutesTransactionUseCase: any = null,
   ) {}
 
   create(productType: ProductCategory): UseCase | null {
     switch (productType) {
-      case 'minutes':
-        return this.addMinutesTransactionUseCase;
+      case 'appointment':
+        // Future: Add appointment completion logic here if needed
+        return null;
       default:
         console.warn(
           `⚠️ Nenhum use case configurado para o produto: ${productType}`,

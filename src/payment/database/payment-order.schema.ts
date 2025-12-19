@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { OrderStatus, OrderType } from '../payment-order.entity';
-import { ProductCategory } from 'src/products/product-entity';
+import { OrderStatus, OrderType, ProductCategory } from '../payment-order.entity';
 
 @Schema({ timestamps: true })
 export class PaymentOrder extends Document {
@@ -11,7 +10,7 @@ export class PaymentOrder extends Document {
   @Prop({ type: String, enum: ['payment', 'withdrawal'], required: true })
   type: OrderType;
 
-  @Prop({ type: String, enum: ['minutes'], required: true })
+  @Prop({ type: String, enum: ['appointment'], required: true })
   productType: ProductCategory;
 
   @Prop({ type: Number, required: true })

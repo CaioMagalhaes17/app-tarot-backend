@@ -6,14 +6,16 @@ import { PaymentIntentCreatedListener } from './events/listeners/payment-created
 import { InfraEventEmitter } from './events/event-emmiter.gateway';
 import { PaymentOrderSucceedListener } from './events/listeners/payment-order-succeed';
 import { PaymentOrderCompletedFactory } from './payment/factories/payment-order-completed-factory';
-import { AddMinutesTransactionUseCase } from 'src/client-minutes/use-cases/events/add-minutes-transaction';
-import { ClientMinutesModule } from 'src/client-minutes/client-minutes.module';
+// ClientMinutesModule removed - module is no longer used
+// import { AddMinutesTransactionUseCase } from 'src/client-minutes/use-cases/events/add-minutes-transaction';
+// import { ClientMinutesModule } from 'src/client-minutes/client-minutes.module';
 import { PaymentOrderFailedFactory } from './payment/factories/payment-order-failed-factory';
-import { FailedMinutesTransactionUseCase } from 'src/client-minutes/use-cases/events/failed-minutes-transaction';
+// import { FailedMinutesTransactionUseCase } from 'src/client-minutes/use-cases/events/failed-minutes-transaction';
 import { PaymentOrderFailedListener } from './events/listeners/payment-order-failed';
 
 @Module({
-  imports: [ClientMinutesModule],
+  // ClientMinutesModule removed - module is no longer used
+  imports: [],
   providers: [
     {
       provide: PaymentGateway,
@@ -25,21 +27,19 @@ import { PaymentOrderFailedListener } from './events/listeners/payment-order-fai
     },
     {
       provide: PaymentOrderCompletedFactory,
-      useFactory: (
-        addMinutesTransactionUseCase: AddMinutesTransactionUseCase,
-      ) => {
-        return new PaymentOrderCompletedFactory(addMinutesTransactionUseCase);
+      useFactory: () => {
+        // ClientMinutesModule removed - no longer injecting AddMinutesTransactionUseCase
+        return new PaymentOrderCompletedFactory(null);
       },
-      inject: [AddMinutesTransactionUseCase],
+      inject: [],
     },
     {
       provide: PaymentOrderFailedFactory,
-      useFactory: (
-        failedMinutesTransactionUseCase: FailedMinutesTransactionUseCase,
-      ) => {
-        return new PaymentOrderFailedFactory(failedMinutesTransactionUseCase);
+      useFactory: () => {
+        // ClientMinutesModule removed - no longer injecting FailedMinutesTransactionUseCase
+        return new PaymentOrderFailedFactory(null);
       },
-      inject: [FailedMinutesTransactionUseCase],
+      inject: [],
     },
     PaymentIntentCreatedListener,
     PaymentOrderSucceedListener,

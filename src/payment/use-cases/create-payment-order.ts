@@ -1,10 +1,9 @@
 import { PaymentGateway } from 'src/gateways/payment/payment-gateway';
 import { IPaymentOrderRepository } from '../database/payment-order.repository.interface';
-import { PaymentOrderEntity } from '../payment-order.entity';
+import { PaymentOrderEntity, ProductCategory } from '../payment-order.entity';
 import { Either, left, right } from 'src/core/Either';
 import { IUserRepository } from 'src/user/database/user.repository.interface';
 import { UserNotFound } from 'src/user/errors/UserNotFound';
-import { ProductCategory } from 'src/products/product-entity';
 
 export class CreatePaymentOrderUseCase {
   constructor(
