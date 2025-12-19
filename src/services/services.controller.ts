@@ -14,7 +14,7 @@ export class ServicesController {
   async getUser() {
     const response = await this.getAllServicesUseCase.execute();
 
-    return response.map((item) => ServicesPresenter.toHttp(item));
+    return ServicesPresenter.toHttpArray(response);
   }
 
   @Get('/services/:serviceId')
