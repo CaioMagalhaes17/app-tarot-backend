@@ -1,3 +1,8 @@
+type AtendentsListParams = {
+  search?: string;
+  service?: string;
+};
+
 export interface BaseDomainRepository<DomainModel> {
   create(data: Partial<DomainModel>): Promise<{ id: string }>;
   findAll(): Promise<DomainModel[]>;
@@ -10,5 +15,5 @@ export interface BaseDomainRepository<DomainModel> {
     paginateObj?: { page: number; limit: number },
   ): Promise<DomainModel[]>;
   search(field: string, query: string): Promise<DomainModel[]>;
-  findAllPaginated<T>(page: number, limit: number, param?: T);
+  findAllPaginated(page: number, limit: number, param?: AtendentsListParams);
 }

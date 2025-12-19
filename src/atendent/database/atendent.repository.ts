@@ -39,10 +39,28 @@ export class AtendentRepository extends BaseInfraRepository<
 
     return atendent;
   }
-  async findAllPaginated<T = unknown>(page: number, limit: number, param?: T) {
+  async findAtendents(
+    page: number,
+    limit: number,
+    search?: string,
+  ): Promise<{
+    data: AtendentEntity[];
+    total: number;
+    page: number;
+    pages: number;
+  }> {
     const skip = (page - 1) * limit;
     const [data, total] = await Promise.all([
-      this.model.find(param).skip(skip).limit(limit).populate('userId').exec(),
+      this.model
+        .find(
+          search && {
+            name: { $regex: search, $options: 'i' },
+          },
+        )
+        .skip(skip)
+        .limit(limit)
+        .populate('userId')
+        .exec(),
       this.model.countDocuments().exec(),
     ]);
 

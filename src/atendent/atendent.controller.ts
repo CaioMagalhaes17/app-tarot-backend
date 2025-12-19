@@ -18,6 +18,7 @@ import { JwtAuthGuard } from 'src/infra/auth/guards/jwt.guard';
 import { CreateAtendentUseCase } from './use-cases/create-atendent';
 import { CreateAtendentDTO } from './schema/create-atendent.schema';
 import { UpdateAtendentUseCase } from './use-cases/update-atendent';
+import { AtendentPresenter } from './atendent.presenter';
 
 @Controller()
 export class AtendentController {
@@ -32,9 +33,22 @@ export class AtendentController {
   async getAtendents(
     @Query('limit') limit: number,
     @Query('page') page: number,
+    @Query('service') service: string,
+    @Query('search') search: string,
   ) {
-    const result = await this.getAtendentsUseCases.execute({ limit, page });
-    return result;
+    console.log(search);
+    const result = await this.getAtendentsUseCases.execute(
+      { service, search },
+      { limit, page },
+    );
+    return {
+      data: result.data.map((item) => AtendentPresenter.toHttp(item)),
+      pagination: {
+        total: result.total,
+        page: result.page,
+        pages: result.pages,
+      },
+    };
   }
 
   @Get('/atendent/:id')
@@ -48,7 +62,7 @@ export class AtendentController {
           throw new BadRequestException('Erro não tratado');
       }
     }
-    return result;
+    return AtendentPresenter.toHttp(result.value);
   }
 
   @UseGuards(JwtAuthGuard)

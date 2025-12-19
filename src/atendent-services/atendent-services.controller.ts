@@ -40,7 +40,6 @@ export class AtendentServicesController {
       price: number;
     }[],
   ) {
-    console.log(new Date());
     const response = await this.chooseServicesUseCase.execute({
       atendentId: req.user.atendentId,
       services: data,
