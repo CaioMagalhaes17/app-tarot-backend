@@ -129,6 +129,6 @@ export class UserController {
           throw new BadRequestException('Erro não tratado');
       }
     }
-    return UserPresenter.toHttp(response.value);
+    return UserPresenter.toHttp(response.value.user, false, response.value.atendent);
   }
 }
