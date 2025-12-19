@@ -4,7 +4,6 @@ import { InMemoryAppointmentRepository } from 'src/appointment/tests/in-memory-a
 import { makeAtendent } from './makeAtendent';
 import { makeAppointment } from 'src/appointment/tests/makeAppointment';
 import { AtendentNotFound } from '../errors/AtendentNotFound';
-import { makeUser } from 'src/user/tests/makeUser';
 
 let inMemoryAtendentRepository: InMemoryAtendentRepository;
 let inMemoryAppointmentRepository: InMemoryAppointmentRepository;
@@ -82,7 +81,7 @@ describe('GetAvailability', () => {
     const appointment = makeAppointment({
       date: tomorrow,
       startTime: '10:00',
-      endTime: '10:30',
+      endTime: '11:00',
     });
     inMemoryAppointmentRepository.create(appointment);
 
@@ -96,7 +95,7 @@ describe('GetAvailability', () => {
       if (tomorrowDay) {
         // Should not have slot at 10:00-10:30
         const hasOccupiedSlot = tomorrowDay.availableSlots.some(
-          (slot) => slot.start === '10:00' && slot.end === '10:30',
+          (slot) => slot.start === '10:00' && slot.end === '11:00',
         );
         expect(hasOccupiedSlot).toBe(false);
       }
@@ -115,7 +114,7 @@ describe('GetAvailability', () => {
     const canceledAppointment = makeAppointment({
       date: tomorrow,
       startTime: '10:00',
-      endTime: '10:30',
+      endTime: '11:00',
       status: 'canceled',
     });
     inMemoryAppointmentRepository.create(canceledAppointment);
@@ -130,7 +129,7 @@ describe('GetAvailability', () => {
       if (tomorrowDay) {
         // Should have slot at 10:00-10:30 because appointment is canceled
         const hasAvailableSlot = tomorrowDay.availableSlots.some(
-          (slot) => slot.start === '10:00' && slot.end === '10:30',
+          (slot) => slot.start === '10:00' && slot.end === '11:00',
         );
         expect(hasAvailableSlot).toBe(true);
       }
@@ -156,7 +155,7 @@ describe('GetAvailability', () => {
         };
         const startMinutes = timeToMinutes(firstSlot.start);
         const endMinutes = timeToMinutes(firstSlot.end);
-        expect(endMinutes - startMinutes).toBe(30);
+        expect(endMinutes - startMinutes).toBe(60);
       }
     }
   });
