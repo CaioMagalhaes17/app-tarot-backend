@@ -24,6 +24,7 @@ export type AppointmentProps = {
   startTime: string;
   endTime: string;
   status: AppointmentStatus;
+  paymentOrderId?: string;
   canceledReason?: string;
   createdAt: Date;
   updatedAt?: Date;
@@ -71,6 +72,10 @@ export class AppointmentEntity extends BaseEntity<AppointmentProps> {
 
   get canceledReason() {
     return this.props.canceledReason;
+  }
+
+  get paymentOrderId() {
+    return this.props.paymentOrderId;
   }
 
   touch() {

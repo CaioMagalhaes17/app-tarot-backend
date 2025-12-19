@@ -12,4 +12,7 @@ export interface IAppointmentRepository
     startDate: Date,
     endDate: Date,
   ): Promise<AppointmentEntity[]>;
+  findByPaymentOrderId(
+    paymentOrderId: string,
+  ): Promise<AppointmentEntity | null>;
 }
