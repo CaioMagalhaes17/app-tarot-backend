@@ -5,6 +5,7 @@ import { ResourceNotFoundError } from 'src/core/errors/resource-not-found';
 type UpdateAtendentServiceUseCaseRequest = {
   price?: number;
   description?: string;
+  isActive?: boolean;
 };
 export class UpdateAtendentServiceUseCase {
   constructor(
