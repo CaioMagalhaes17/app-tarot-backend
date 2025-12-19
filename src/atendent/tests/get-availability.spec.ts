@@ -58,11 +58,14 @@ describe('GetAvailability', () => {
 
     expect(response.isRight()).toBe(true);
     if (response.isRight()) {
+      // Get today's date as YYYY-MM-DD string for comparison
       const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      const todayString = today.toISOString().split('T')[0];
+      
       response.value.days.forEach((day) => {
-        const dayDate = new Date(day.date);
-        expect(dayDate >= today).toBe(true);
+        // day.date is already in YYYY-MM-DD format
+        // Compare as strings to avoid timezone issues
+        expect(day.date >= todayString).toBe(true);
       });
     }
   });
@@ -174,10 +177,14 @@ describe('GetAvailability', () => {
 
     expect(response.isRight()).toBe(true);
     if (response.isRight()) {
+      // Convert dates to YYYY-MM-DD strings for comparison
+      const startDateString = startDate.toISOString().split('T')[0];
+      const endDateString = endDate.toISOString().split('T')[0];
+      
       response.value.days.forEach((day) => {
-        const dayDate = new Date(day.date);
-        expect(dayDate >= startDate).toBe(true);
-        expect(dayDate <= endDate).toBe(true);
+        // day.date is already in YYYY-MM-DD format
+        expect(day.date >= startDateString).toBe(true);
+        expect(day.date <= endDateString).toBe(true);
       });
     }
   });
