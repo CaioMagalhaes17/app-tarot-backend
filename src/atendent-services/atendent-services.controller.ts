@@ -18,6 +18,7 @@ import { FetchAtendentServices } from './use-cases/fetch-all-atendent-services';
 import { FetchAllAtendentServicesByService } from './use-cases/fetch-all-atendent-services-by-service';
 import { UpdateAtendentServiceUseCase } from './use-cases/update-service';
 import { AtendentServicesPresenter } from './atendent-services.presenter';
+import { UpdateAtendentServiceDTO } from './schemas/update-atendent-service.schema';
 
 @Controller('atendent-service')
 export class AtendentServicesController {
@@ -61,12 +62,17 @@ export class AtendentServicesController {
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body() data: { description?: string; price?: number },
+    @Body() data: UpdateAtendentServiceDTO,
   ) {
-    const response = await this.updateServiceUseCase.execute(id, data);
+    const response = await this.updateServiceUseCase.execute(id, {
+      description: data.description,
+      price: data.price,
+      isActive: data.isActive,
+    });
     if (response.isLeft()) {
       throw new BadRequestException(response.value.message);
     }
+    return { message: 'Serviço atualizado com sucesso' };
   }
 
   @UseGuards(JwtAuthGuard)

@@ -63,11 +63,14 @@ export class AtendentServicesEntity extends BaseEntity<AtendentServicesProps> {
   }
 
   update(props: Partial<AtendentServicesEntity>) {
-    if (props.description) {
+    if (props.description !== undefined) {
       this.props.description = props.description;
     }
-    if (props.price) {
+    if (props.price !== undefined) {
       this.props.price = props.price;
+    }
+    if (props.isActive !== undefined) {
+      this.props.isActive = props.isActive;
     }
     this.touch();
   }
