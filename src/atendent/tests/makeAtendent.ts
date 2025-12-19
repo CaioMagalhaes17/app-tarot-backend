@@ -1,5 +1,4 @@
 import { AtendentEntity, AtendentProps, Schedule } from '../atendent.entity';
-import { UserEntity } from 'src/user/user.entity';
 import { makeUser } from 'src/user/tests/makeUser';
 
 const defaultSchedule: Schedule = {
@@ -12,10 +11,7 @@ const defaultSchedule: Schedule = {
   saturday: [{ start: '09:00', end: '13:00' }],
 };
 
-export function makeAtendent(
-  override?: Partial<AtendentProps>,
-  id?: string,
-) {
+export function makeAtendent(override?: Partial<AtendentProps>, id?: string) {
   const user = override?.user || makeUser({ isAtendent: true }, 'USER_ID');
 
   const data: AtendentProps = {
@@ -29,4 +25,3 @@ export function makeAtendent(
 
   return AtendentEntity.create(data, id || 'ATENDENT_ID');
 }
-
