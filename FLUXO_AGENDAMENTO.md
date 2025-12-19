@@ -9,6 +9,7 @@ Este documento descreve o fluxo completo de relacionamento entre as entidades pr
 ## 🏗️ Arquitetura das Entidades
 
 ### 1. **User (Usuário)**
+
 Entidade base que representa qualquer pessoa no sistema (cliente ou atendente).
 
 ```typescript
@@ -16,7 +17,7 @@ Entidade base que representa qualquer pessoa no sistema (cliente ou atendente).
   id: string;
   login: string;
   name: string;
-  isAtendent: boolean;  // Define se é atendente ou cliente
+  isAtendent: boolean; // Define se é atendente ou cliente
   isVerified: boolean;
   profileImg: string;
   // ... outros campos
@@ -24,35 +25,39 @@ Entidade base que representa qualquer pessoa no sistema (cliente ou atendente).
 ```
 
 ### 2. **Atendent (Atendente)**
+
 Perfil profissional do consultor de tarot. Criado quando um usuário se registra como atendente.
 
 ```typescript
 {
   id: string;
-  user: UserEntity;           // Relacionamento 1:1 com User
-  name: string;               // Nome profissional
-  bio: string;                // Descrição profissional
-  rating: number;             // Avaliação média (0-5)
-  schedule: Schedule;         // Horários de trabalho por dia da semana
+  user: UserEntity; // Relacionamento 1:1 com User
+  name: string; // Nome profissional
+  bio: string; // Descrição profissional
+  rating: number; // Avaliação média (0-5)
+  schedule: Schedule; // Horários de trabalho por dia da semana
 }
 ```
 
 **Relacionamento:**
+
 - `User` 1:1 `Atendent` (quando `user.isAtendent === true`)
 
 ### 3. **Service (Serviço)**
+
 Catálogo geral de serviços disponíveis no sistema (definidos pela plataforma).
 
 ```typescript
 {
   id: string;
-  name: string;              // Ex: "Consulta de Tarot", "Mapa Astral"
-  description: string;       // Descrição padrão do serviço
-  serviceImg: string;        // Imagem do serviço
+  name: string; // Ex: "Consulta de Tarot", "Mapa Astral"
+  description: string; // Descrição padrão do serviço
+  serviceImg: string; // Imagem do serviço
 }
 ```
 
 **Exemplos de serviços:**
+
 - Consulta de Tarot Online
 - Tirada Rápida (3 cartas)
 - Tarot do Amor
@@ -61,30 +66,34 @@ Catálogo geral de serviços disponíveis no sistema (definidos pela plataforma)
 - Horóscopo do Dia
 
 ### 4. **AtendentService (Serviço Customizado do Atendente)**
+
 Personalização de um serviço do catálogo por um atendente específico.
 
 ```typescript
 {
   id: string;
-  atendent: AtendentEntity;    // Atendente que oferece este serviço
-  service: ServicesEntity;      // Serviço base do catálogo
-  description: string;          // Descrição personalizada do atendente
-  price: number;                // Preço definido pelo atendente
-  isActive: boolean;            // Se o serviço está ativo
+  atendent: AtendentEntity; // Atendente que oferece este serviço
+  service: ServicesEntity; // Serviço base do catálogo
+  description: string; // Descrição personalizada do atendente
+  price: number; // Preço definido pelo atendente
+  isActive: boolean; // Se o serviço está ativo
 }
 ```
 
 **Relacionamentos:**
+
 - `Atendent` 1:N `AtendentService` (um atendente pode ter vários serviços)
 - `Service` 1:N `AtendentService` (um serviço pode ser usado por vários atendentes)
 
 **Características:**
+
 - Cada atendente escolhe quais serviços do catálogo ele quer oferecer
 - Cada atendente define seu próprio preço para cada serviço
 - Cada atendente pode escrever sua própria descrição do serviço
 - O atendente pode ativar/desativar serviços
 
 ### 5. **Appointment (Agendamento)**
+
 Consulta agendada entre um cliente e um atendente para um serviço específico.
 
 ```typescript
@@ -101,6 +110,7 @@ Consulta agendada entre um cliente e um atendente para um serviço específico.
 ```
 
 **Relacionamentos:**
+
 - `User` 1:N `Appointment` (um cliente pode ter vários agendamentos)
 - `AtendentService` 1:N `Appointment` (um serviço pode ter vários agendamentos)
 
@@ -111,6 +121,7 @@ Consulta agendada entre um cliente e um atendente para um serviço específico.
 ### **Fase 1: Configuração do Atendente**
 
 #### 1.1. Cadastro do Atendente
+
 ```
 1. Usuário se cadastra no sistema com isAtendent = true
 2. Sistema cria registro na tabela User
@@ -118,6 +129,7 @@ Consulta agendada entre um cliente e um atendente para um serviço específico.
 ```
 
 #### 1.2. Criação do Perfil de Atendente
+
 ```
 Endpoint: POST /atendent
 Payload: {
@@ -134,6 +146,7 @@ Resultado: Cria registro em Atendent vinculado ao User
 ```
 
 #### 1.3. Escolha e Customização de Serviços
+
 ```
 Endpoint: POST /atendent-service/choose
 Payload: [
@@ -153,6 +166,7 @@ Resultado: Cria registros em AtendentService para cada serviço escolhido
 ```
 
 **O que acontece:**
+
 - Atendente visualiza todos os serviços disponíveis no catálogo (`Service`)
 - Atendente seleciona quais serviços quer oferecer
 - Para cada serviço, define:
@@ -161,6 +175,7 @@ Resultado: Cria registros em AtendentService para cada serviço escolhido
 - Sistema cria `AtendentService` vinculando `Atendent` + `Service` + customizações
 
 #### 1.4. Gerenciamento de Serviços
+
 ```
 Atualizar serviço:
 PUT /atendent-service/:id
@@ -175,6 +190,7 @@ DELETE /atendent-service/exclude/:id
 ### **Fase 2: Busca e Visualização (Cliente)**
 
 #### 2.1. Buscar Atendentes
+
 ```
 Endpoint: GET /atendent?page=1&limit=10&search=joão
 
@@ -185,6 +201,7 @@ Retorna: Lista paginada de atendentes com:
 ```
 
 #### 2.2. Visualizar Perfil do Atendente
+
 ```
 Endpoint: GET /atendent/:id
 
@@ -196,6 +213,7 @@ Retorna: {
 ```
 
 #### 2.3. Visualizar Serviços do Atendente
+
 ```
 Endpoint: GET /atendent-service/by-atendent/:id
 
@@ -216,6 +234,7 @@ Retorna: [
 ```
 
 #### 2.4. Verificar Disponibilidade
+
 ```
 Endpoint: GET /atendent/:id/availability?startDate=2024-01-15&endDate=2024-01-30
 
@@ -236,20 +255,23 @@ Retorna: {
 
 ---
 
-### **Fase 3: Agendamento (Cliente)**
+### **Fase 3: Agendamento e Pagamento (Cliente)**
 
-#### 3.1. Processo de Agendamento (4 Etapas)
+#### 3.1. Processo de Agendamento com Pagamento (5 Etapas)
 
 **Etapa 1: Autenticação**
+
 - Cliente faz login ou cadastro
 - Sistema valida autenticação
 
 **Etapa 2: Escolha do Serviço**
+
 - Cliente visualiza serviços disponíveis do atendente
 - Cliente seleciona um `AtendentService`
 - Visualiza preço e descrição personalizada
 
 **Etapa 3: Escolha de Data e Hora**
+
 - Cliente visualiza disponibilidade do atendente
 - Seleciona data e horário disponível
 - Sistema valida:
@@ -257,13 +279,24 @@ Retorna: {
   - Horário deve estar dentro do schedule do atendente
   - Horário não pode estar ocupado por outro agendamento
 
-**Etapa 4: Pagamento**
-- Cliente realiza pagamento (Stripe - Cartão/PIX)
-- Após confirmação do pagamento, agendamento é criado
+**Etapa 4: Criação do Payment Order**
 
-#### 3.2. Criação do Agendamento
+- Cliente solicita criação do pagamento
+- Sistema valida novamente a disponibilidade (dupla validação)
+- Sistema cria `PaymentOrder` com metadados do agendamento
+- Sistema retorna `clientSecret` do Stripe para processamento do pagamento
+
+**Etapa 5: Confirmação do Pagamento e Criação do Agendamento**
+
+- Cliente realiza pagamento no frontend usando `clientSecret`
+- Stripe processa o pagamento e envia webhook
+- Sistema recebe webhook de confirmação
+- Sistema cria `Appointment` automaticamente após confirmação do pagamento
+
+#### 3.2. Criação do Payment Order para Agendamento
+
 ```
-Endpoint: POST /appointment/schedule
+Endpoint: POST /appointment/payment
 Headers: Authorization: Bearer {token}
 Payload: {
   atendentServiceId: "atendent_service_id_1",
@@ -273,15 +306,46 @@ Payload: {
 }
 
 Processo interno:
-1. Valida se atendentService existe
-2. Valida se usuário existe
-3. Cria AppointmentEntity com status 'scheduled'
-4. Salva no banco de dados
+1. Valida se atendentService existe e está ativo
+2. Valida se a data não está no passado
+3. Valida disponibilidade do atendente (primeira validação)
+4. Verifica se o horário escolhido está disponível
+5. Cria PaymentOrder com:
+   - amount: preço do atendentService
+   - productType: "appointment"
+   - description: JSON com metadados do agendamento
+6. Retorna { id, externalId, clientSecret }
+
+Resposta:
+{
+  id: "payment_order_id",
+  externalId: "pi_stripe_id",
+  clientSecret: "pi_xxx_secret_xxx"
+}
 ```
 
-**Estrutura criada:**
+#### 3.3. Processamento do Pagamento via Webhook
+
+```
+Fluxo automático após pagamento confirmado:
+
+1. Stripe envia webhook: payment_intent.succeeded
+2. Sistema atualiza PaymentOrder.status = "completed"
+3. Sistema publica evento: PaymentOrderSucceed
+4. PaymentOrderCompletedFactory identifica productType = "appointment"
+5. ProcessAppointmentPaymentUseCase é executado:
+   - Valida se pagamento está completed
+   - Verifica idempotência (se já existe appointment)
+   - Extrai metadados do description
+   - Valida disponibilidade novamente (segunda validação)
+   - Cria AppointmentEntity vinculado ao PaymentOrder
+```
+
+#### 3.4. Estrutura do Agendamento Criado
+
 ```
 Appointment {
+  id: "appointment_id",
   user: User (cliente),
   atendentService: {
     atendent: {
@@ -297,15 +361,32 @@ Appointment {
   date: "2024-01-15",
   startTime: "10:00",
   endTime: "10:30",
-  status: "scheduled"
+  status: "scheduled",
+  paymentOrderId: "payment_order_id"  // Vinculado ao pagamento
 }
 ```
+
+#### 3.5. Validações Duplas de Disponibilidade
+
+O sistema realiza **duas validações** de disponibilidade para garantir integridade:
+
+1. **Primeira Validação (Antes do Pagamento)**
+
+   - Quando o cliente solicita criar o payment order
+   - Garante que o horário ainda está disponível antes de iniciar o pagamento
+   - Evita que o cliente pague por um horário já ocupado
+
+2. **Segunda Validação (Após Confirmação do Pagamento)**
+   - Quando o webhook confirma o pagamento
+   - Garante que o horário ainda está disponível no momento da criação do agendamento
+   - Evita conflitos caso outro agendamento tenha sido criado entre a primeira validação e a confirmação do pagamento
 
 ---
 
 ### **Fase 4: Gerenciamento de Agendamentos**
 
 #### 4.1. Visualizar Agendamentos do Cliente
+
 ```
 Endpoint: GET /appointment/by-user
 Headers: Authorization: Bearer {token}
@@ -317,6 +398,7 @@ Retorna: Lista de agendamentos do usuário logado com:
 ```
 
 #### 4.2. Visualizar Agendamentos do Atendente
+
 ```
 Endpoint: GET /appointment/by-atendent/:id
 Headers: Authorization: Bearer {token}
@@ -325,6 +407,7 @@ Retorna: Lista de agendamentos do atendente
 ```
 
 #### 4.3. Atualizar Status do Agendamento
+
 ```
 Endpoint: PUT /appointment/:id
 Payload: {
@@ -334,6 +417,7 @@ Payload: {
 ```
 
 **Estados do Agendamento:**
+
 - `scheduled`: Agendado e aguardando
 - `on-going`: Consulta em andamento
 - `completed`: Consulta finalizada
@@ -407,18 +491,24 @@ Payload: {
 ## 🎯 Pontos Importantes
 
 ### **Sobre AtendentService:**
+
 - ✅ Permite que cada atendente tenha preços diferentes para o mesmo serviço
 - ✅ Permite descrições personalizadas por atendente
 - ✅ Permite que atendentes escolham quais serviços oferecer
 - ✅ Permite ativar/desativar serviços sem deletar
 
 ### **Sobre Appointment:**
+
 - ✅ Sempre vinculado a um `AtendentService` (não diretamente a `Service`)
 - ✅ Contém todas as informações necessárias: atendente, serviço, preço, cliente
 - ✅ Status permite rastrear o ciclo de vida da consulta
 - ✅ Data e horário são validados contra disponibilidade do atendente
+- ✅ **Vinculado a um `PaymentOrder` através de `paymentOrderId`**
+- ✅ **Criado apenas após confirmação do pagamento via webhook**
+- ✅ **Validação dupla de disponibilidade** (antes do pagamento e antes de criar)
 
 ### **Sobre Disponibilidade:**
+
 - ✅ Calculada baseada no `schedule` do atendente
 - ✅ Exclui horários já ocupados por agendamentos ativos
 - ✅ Não considera agendamentos cancelados
@@ -435,12 +525,18 @@ Payload: {
 5. **Agendamentos devem respeitar o schedule do atendente**
 6. **Agendamentos não podem sobrepor horários já ocupados**
 7. **Apenas o dono do agendamento pode cancelar**
+8. **Agendamentos são criados APENAS após confirmação do pagamento via webhook**
+9. **Disponibilidade é validada DUAS VEZES**: antes do pagamento e antes de criar o agendamento
+10. **PaymentOrder armazena metadados do agendamento no campo `description` (JSON)**
+11. **Appointment é vinculado ao PaymentOrder através de `paymentOrderId`**
+12. **Processo é idempotente**: se o agendamento já existe para um paymentOrder, não cria duplicado
 
 ---
 
 ## 📝 Exemplo Prático Completo
 
 ### **Setup do Atendente:**
+
 ```javascript
 // 1. Usuário se registra como atendente
 POST /user/signup
@@ -459,6 +555,7 @@ POST /atendent-service/choose
 ```
 
 ### **Cliente Agenda Consulta:**
+
 ```javascript
 // 1. Busca atendentes
 GET /atendent?search=joão
@@ -470,14 +567,19 @@ GET /atendent-service/by-atendent/:atendent_id
 // 3. Verifica disponibilidade
 GET /atendent/:atendent_id/availability
 
-// 4. Agenda consulta
-POST /appointment/schedule
+// 4. Cria payment order para agendamento
+POST /appointment/payment
 {
   atendentServiceId: "atendent_service_1",
   date: "2024-01-15",
   startTime: "10:00",
   endTime: "10:30"
 }
+// Retorna: { id: "payment_order_id", externalId: "pi_xxx", clientSecret: "pi_xxx_secret_xxx" }
+
+// 5. Frontend processa pagamento com clientSecret (Stripe)
+// 6. Stripe envia webhook de confirmação
+// 7. Sistema cria Appointment automaticamente após confirmação
 ```
 
 ---
@@ -485,6 +587,7 @@ POST /appointment/schedule
 ## 🚀 Endpoints Principais
 
 ### **Atendente:**
+
 - `GET /atendent` - Listar atendentes
 - `GET /atendent/:id` - Ver perfil do atendente
 - `GET /atendent/:id/availability` - Ver disponibilidade
@@ -492,6 +595,7 @@ POST /appointment/schedule
 - `PUT /atendent` - Atualizar perfil (autenticado)
 
 ### **Serviços do Atendente:**
+
 - `GET /atendent-service/by-atendent/:id` - Listar serviços do atendente
 - `GET /atendent-service/:id` - Ver detalhes do serviço
 - `POST /atendent-service/choose` - Escolher serviços (autenticado - atendente)
@@ -499,12 +603,121 @@ POST /appointment/schedule
 - `DELETE /atendent-service/exclude/:id` - Desativar serviço (autenticado - atendente)
 
 ### **Agendamentos:**
-- `POST /appointment/schedule` - Criar agendamento (autenticado)
+
+- `POST /appointment/payment` - Criar payment order para agendamento (autenticado)
+  - Valida disponibilidade antes de criar o pagamento
+  - Retorna `clientSecret` para processamento no frontend
+- `POST /appointment/schedule` - Criar agendamento diretamente (legado - não recomendado)
 - `GET /appointment/by-user` - Meus agendamentos (autenticado)
 - `GET /appointment/by-atendent/:id` - Agendamentos do atendente (autenticado)
 - `PUT /appointment/:id` - Atualizar agendamento (autenticado)
+
+**Nota:** O agendamento é criado automaticamente após confirmação do pagamento via webhook do Stripe.
 
 ---
 
 **Última atualização:** 2024-12-19
 
+---
+
+## 💳 Fluxo de Pagamento Detalhado
+
+### **Arquitetura do Fluxo de Pagamento**
+
+```
+┌─────────────┐
+│   Cliente   │
+└──────┬──────┘
+       │
+       │ 1. POST /appointment/payment
+       │    { atendentServiceId, date, startTime, endTime }
+       ▼
+┌─────────────────────────────┐
+│ CreateAppointmentPayment    │
+│ OrderUseCase                │
+│ - Valida atendentService    │
+│ - Valida data (não passado) │
+│ - Valida disponibilidade    │
+└──────┬──────────────────────┘
+       │
+       │ 2. Cria PaymentOrder
+       │    - amount: preço do serviço
+       │    - description: JSON com metadados
+       │    - productType: "appointment"
+       ▼
+┌─────────────────────────────┐
+│   PaymentOrder (pending)    │
+│   + clientSecret (Stripe)   │
+└──────┬──────────────────────┘
+       │
+       │ 3. Frontend processa pagamento
+       │    usando clientSecret
+       ▼
+┌─────────────────────────────┐
+│        Stripe API           │
+│   (processa pagamento)      │
+└──────┬──────────────────────┘
+       │
+       │ 4. Webhook: payment_intent.succeeded
+       ▼
+┌─────────────────────────────┐
+│ PaymentIntentSucceeded      │
+│ UseCase                     │
+│ - Atualiza status = completed│
+│ - Publica evento            │
+└──────┬──────────────────────┘
+       │
+       │ 5. Event: PaymentOrderSucceed
+       ▼
+┌─────────────────────────────┐
+│ PaymentOrderCompleted       │
+│ Factory                     │
+│ - Identifica productType    │
+│ - Retorna ProcessAppointment│
+│   PaymentUseCase            │
+└──────┬──────────────────────┘
+       │
+       │ 6. ProcessAppointmentPaymentUseCase
+       │    - Valida pagamento completed
+       │    - Verifica idempotência
+       │    - Extrai metadados
+       │    - Valida disponibilidade (2ª vez)
+       ▼
+┌─────────────────────────────┐
+│ CreateAppointmentAfter      │
+│ PaymentUseCase             │
+│ - Valida tudo novamente     │
+│ - Cria Appointment          │
+└──────┬──────────────────────┘
+       │
+       │ 7. Appointment criado
+       ▼
+┌─────────────────────────────┐
+│      Appointment            │
+│   (status: scheduled)       │
+│   paymentOrderId: "xxx"     │
+└─────────────────────────────┘
+```
+
+### **Metadados Armazenados no PaymentOrder**
+
+O campo `description` do `PaymentOrder` armazena um JSON com os metadados do agendamento:
+
+```json
+{
+  "atendentServiceId": "atendent_service_id",
+  "userId": "user_id",
+  "date": "2024-01-15T00:00:00.000Z",
+  "startTime": "10:00",
+  "endTime": "10:30"
+}
+```
+
+**Nota:** No futuro, isso pode ser substituído por um campo `metadata` dedicado no `PaymentOrderEntity`.
+
+### **Tratamento de Erros**
+
+- **Pagamento falha**: `PaymentOrder.status = "failed"`, nenhum agendamento é criado
+- **Horário ocupado entre validações**: Segunda validação detecta e retorna erro
+- **Webhook duplicado**: Idempotência garante que não cria appointment duplicado
+- **Metadados inválidos**: Erro retornado, pagamento fica como completed mas sem appointment

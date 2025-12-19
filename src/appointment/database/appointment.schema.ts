@@ -47,6 +47,9 @@ export class Appointment extends Document {
 
   @Prop({ type: String, required: false })
   canceledReason?: string;
+
+  @Prop({ type: Types.ObjectId, required: false })
+  paymentOrderId?: Types.ObjectId;
 }
 
 export const AppointmentSchema = SchemaFactory.createForClass(Appointment);

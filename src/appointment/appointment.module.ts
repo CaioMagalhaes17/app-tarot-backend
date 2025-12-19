@@ -13,12 +13,24 @@ import { IUserRepository } from 'src/user/database/user.repository.interface';
 import { AtendentServicesRepository } from 'src/atendent-services/database/atendent-services.repository';
 import { UserRepository } from 'src/user/database/user.repository';
 import { UpdateAppointmentUseCase } from './use-cases/update-appointment';
+import { CreateAppointmentPaymentOrderUseCase } from './use-cases/create-appointment-payment-order';
+import { CreatePaymentOrderUseCase } from 'src/payment/use-cases/create-payment-order';
+import { PaymentOrderModule } from 'src/payment/payment-order.module';
+import { IAtendentRepository } from 'src/atendent/database/atendent.repository.interface';
+import { AtendentRepository } from 'src/atendent/database/atendent.repository';
+import { AtendentDatabaseModule } from 'src/atendent/database/atendent.database.module';
+import { ProcessAppointmentPaymentUseCase } from './use-cases/process-appointment-payment';
+import { CreateAppointmentAfterPaymentUseCase } from './use-cases/create-appointment-after-payment';
+import { IPaymentOrderRepository } from 'src/payment/database/payment-order.repository.interface';
+import { PaymentOrderRepository } from 'src/payment/database/payment-order.repository';
 
 @Module({
   imports: [
     UserDatabaseModule,
     AppointmentDatabaseModule,
     AtendentServicesDatabaseModule,
+    PaymentOrderModule,
+    AtendentDatabaseModule,
   ],
   controllers: [AppointmentController],
   providers: [
@@ -62,6 +74,70 @@ import { UpdateAppointmentUseCase } from './use-cases/update-appointment';
       },
       inject: [AppointmentRepository],
     },
+    {
+      provide: CreateAppointmentPaymentOrderUseCase,
+      useFactory: (
+        atendentServiceRepository: IAtendentServicesRepository,
+        createPaymentOrderUseCase: CreatePaymentOrderUseCase,
+        appointmentRepository: IAppointmentRepository,
+        atendentRepository: IAtendentRepository,
+      ) => {
+        return new CreateAppointmentPaymentOrderUseCase(
+          atendentServiceRepository,
+          createPaymentOrderUseCase,
+          appointmentRepository,
+          atendentRepository,
+        );
+      },
+      inject: [
+        AtendentServicesRepository,
+        CreatePaymentOrderUseCase,
+        AppointmentRepository,
+        AtendentRepository,
+      ],
+    },
+    {
+      provide: CreateAppointmentAfterPaymentUseCase,
+      useFactory: (
+        appointmentRepository: IAppointmentRepository,
+        atendentServiceRepository: IAtendentServicesRepository,
+        userRepository: IUserRepository,
+        atendentRepository: IAtendentRepository,
+      ) => {
+        return new CreateAppointmentAfterPaymentUseCase(
+          appointmentRepository,
+          atendentServiceRepository,
+          userRepository,
+          atendentRepository,
+        );
+      },
+      inject: [
+        AppointmentRepository,
+        AtendentServicesRepository,
+        UserRepository,
+        AtendentRepository,
+      ],
+    },
+    {
+      provide: ProcessAppointmentPaymentUseCase,
+      useFactory: (
+        paymentOrderRepository: IPaymentOrderRepository,
+        appointmentRepository: IAppointmentRepository,
+        createAppointmentAfterPayment: CreateAppointmentAfterPaymentUseCase,
+      ) => {
+        return new ProcessAppointmentPaymentUseCase(
+          paymentOrderRepository,
+          appointmentRepository,
+          createAppointmentAfterPayment,
+        );
+      },
+      inject: [
+        PaymentOrderRepository,
+        AppointmentRepository,
+        CreateAppointmentAfterPaymentUseCase,
+      ],
+    },
   ],
+  exports: [ProcessAppointmentPaymentUseCase],
 })
 export class AppointmentModule {}

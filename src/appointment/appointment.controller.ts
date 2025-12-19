@@ -16,6 +16,8 @@ import { UpdateAppointmentUseCase } from './use-cases/update-appointment';
 import { ScheduleAppointmentDTO } from './schemas/schedule-appointment';
 import { UpdateAppointmentDTO } from './schemas/update-appiontment';
 import { JwtAuthGuard } from 'src/infra/auth/guards/jwt.guard';
+import { CreateAppointmentPaymentOrderUseCase } from './use-cases/create-appointment-payment-order';
+import { CreateAppointmentPaymentDTO } from './schemas/create-appointment-payment.schema';
 
 @Controller('appointment')
 export class AppointmentController {
@@ -24,6 +26,7 @@ export class AppointmentController {
     private fetchAllAppointmentsByUserUseCase: FetchAllAppointmentsByUser,
     private scheduleAppointmentUseCase: ScheduleAppointmentUseCase,
     private updateAppointmentUseCase: UpdateAppointmentUseCase,
+    private createAppointmentPaymentOrderUseCase: CreateAppointmentPaymentOrderUseCase,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -39,6 +42,27 @@ export class AppointmentController {
     if (response.isLeft()) {
       throw new BadRequestException(response.value.message);
     }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('payment')
+  async createAppointmentPayment(
+    @Body() data: CreateAppointmentPaymentDTO,
+    @Req() req: { user: { id: string } },
+  ) {
+    const response = await this.createAppointmentPaymentOrderUseCase.execute({
+      userId: req.user.id,
+      atendentServiceId: data.atendentServiceId,
+      date: new Date(data.date),
+      startTime: data.startTime,
+      endTime: data.endTime,
+    });
+
+    if (response.isLeft()) {
+      throw new BadRequestException(response.value.message);
+    }
+
+    return response.value;
   }
 
   @UseGuards(JwtAuthGuard)

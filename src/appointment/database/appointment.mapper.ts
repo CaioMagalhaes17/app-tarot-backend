@@ -3,6 +3,7 @@ import { UserMapper } from 'src/user/database/user.mapper';
 import { AppointmentEntity } from '../appointment.entity';
 import { Appointment } from './appointment.schema';
 import { AtendentServicesMapper } from 'src/atendent-services/database/atendent-services.mapper';
+import { Types } from 'mongoose';
 
 export class AppointmentMapper
   implements BaseMapperInterface<Appointment, AppointmentEntity> {
@@ -12,7 +13,7 @@ export class AppointmentMapper
   ) {}
   toDomain(row: Appointment): AppointmentEntity {
     if (!row) return;
-    const { _id, ...rest } = row.toObject();
+    const { _id, paymentOrderId, ...rest } = row.toObject();
     const user = row.userId as any;
     const atendentService = row.atendentServiceId as any;
     return AppointmentEntity.create(
@@ -20,6 +21,9 @@ export class AppointmentMapper
         ...rest,
         user: this.userMapper.toDomain(user),
         atendentService: this.atendentServiceMapper.toDomain(atendentService),
+        paymentOrderId: paymentOrderId
+          ? paymentOrderId.toString()
+          : undefined,
       },
       _id,
     );
@@ -42,6 +46,9 @@ export class AppointmentMapper
       endTime: domain.endTime,
       status: domain.status,
       canceledReason: domain.canceledReason,
+      paymentOrderId: domain.paymentOrderId
+        ? new Types.ObjectId(domain.paymentOrderId)
+        : undefined,
       createdAt: domain.createdAt,
       updatedAt: domain.updatedAt,
     };

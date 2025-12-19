@@ -12,10 +12,12 @@ import { PaymentOrderCompletedFactory } from './payment/factories/payment-order-
 import { PaymentOrderFailedFactory } from './payment/factories/payment-order-failed-factory';
 // import { FailedMinutesTransactionUseCase } from 'src/client-minutes/use-cases/events/failed-minutes-transaction';
 import { PaymentOrderFailedListener } from './events/listeners/payment-order-failed';
+import { AppointmentModule } from 'src/appointment/appointment.module';
+import { ProcessAppointmentPaymentUseCase } from 'src/appointment/use-cases/process-appointment-payment';
 
 @Module({
   // ClientMinutesModule removed - module is no longer used
-  imports: [],
+  imports: [AppointmentModule],
   providers: [
     {
       provide: PaymentGateway,
@@ -27,11 +29,16 @@ import { PaymentOrderFailedListener } from './events/listeners/payment-order-fai
     },
     {
       provide: PaymentOrderCompletedFactory,
-      useFactory: () => {
+      useFactory: (
+        processAppointmentPaymentUseCase?: ProcessAppointmentPaymentUseCase,
+      ) => {
         // ClientMinutesModule removed - no longer injecting AddMinutesTransactionUseCase
-        return new PaymentOrderCompletedFactory(null);
+        return new PaymentOrderCompletedFactory(
+          null,
+          processAppointmentPaymentUseCase,
+        );
       },
-      inject: [],
+      inject: [ProcessAppointmentPaymentUseCase],
     },
     {
       provide: PaymentOrderFailedFactory,
