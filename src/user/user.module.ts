@@ -32,10 +32,13 @@ import { AtendentDatabaseModule } from 'src/atendent/database/atendent.database.
   providers: [
     {
       provide: GetUserUseCase,
-      useFactory: (userRepository: IUserRepository) => {
-        return new GetUserUseCase(userRepository);
+      useFactory: (
+        userRepository: IUserRepository,
+        atendentRepository: IAtendentRepository,
+      ) => {
+        return new GetUserUseCase(userRepository, atendentRepository);
       },
-      inject: [UserRepository],
+      inject: [UserRepository, AtendentRepository],
     },
     {
       provide: UserLoginUseCase,
