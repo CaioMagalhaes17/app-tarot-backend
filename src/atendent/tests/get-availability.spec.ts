@@ -61,7 +61,6 @@ describe('GetAvailability', () => {
       // Get today's date as YYYY-MM-DD string for comparison
       const today = new Date();
       const todayString = today.toISOString().split('T')[0];
-      
       response.value.days.forEach((day) => {
         // day.date is already in YYYY-MM-DD format
         // Compare as strings to avoid timezone issues
@@ -180,7 +179,7 @@ describe('GetAvailability', () => {
       // Convert dates to YYYY-MM-DD strings for comparison
       const startDateString = startDate.toISOString().split('T')[0];
       const endDateString = endDate.toISOString().split('T')[0];
-      
+
       response.value.days.forEach((day) => {
         // day.date is already in YYYY-MM-DD format
         expect(day.date >= startDateString).toBe(true);
@@ -210,4 +209,3 @@ describe('GetAvailability', () => {
     }
   });
 });
-

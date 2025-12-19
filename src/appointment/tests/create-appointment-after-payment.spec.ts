@@ -532,4 +532,3 @@ describe('CreateAppointmentAfterPaymentUseCase', () => {
     expect(result.isRight()).toBe(true);
   });
 });
-

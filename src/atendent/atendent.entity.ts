@@ -18,7 +18,7 @@ export type Weekday =
 
 export type Schedule = Record<Weekday, WorkRange[]>;
 
-type AtendentProps = {
+export type AtendentProps = {
   user: UserEntity;
   name: string;
   bio: string;

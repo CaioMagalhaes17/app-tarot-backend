@@ -89,8 +89,8 @@ export class AtendentController {
     @Req() req: { user: { id: string } },
     @Body() data: Partial<CreateAtendentDTO>,
   ) {
-    const result = await this.updateAtendentUseCase.execute(req.user.id, data);
-    return result;
+    await this.updateAtendentUseCase.execute(req.user.id, data);
+    return true;
   }
 
   @Get('/atendent/:id/availability')
