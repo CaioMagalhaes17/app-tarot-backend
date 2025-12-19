@@ -16,7 +16,7 @@ export class InMemoryPaymentGateway implements PaymentGateway {
       createdAt: new Date(),
       externalId: randomUUID(),
       status: 'pending',
-      clientSecret: 'client_secret',
+      checkoutUrl: '',
     };
     this.paymentOrders.push(response);
     return right(response);

@@ -68,7 +68,7 @@ export class MercadoPagoGateway extends PaymentGateway {
       return left(
         new CreatePaymentOrderError(
           'Erro ao criar ordem de pagamento no Mercado Pago: ' +
-            (error.message || 'Erro desconhecido'),
+          (error.message || 'Erro desconhecido'),
         ),
       );
     }
@@ -88,7 +88,9 @@ export class MercadoPagoGateway extends PaymentGateway {
         checkoutUrl: response.init_point || '',
       });
     } catch (error: any) {
-      return left(new Error('Erro ao buscar ordem de pagamento: ' + error.message));
+      return left(
+        new Error('Erro ao buscar ordem de pagamento: ' + error.message),
+      );
     }
   }
 
@@ -123,4 +125,3 @@ export class MercadoPagoGateway extends PaymentGateway {
     }
   }
 }
-

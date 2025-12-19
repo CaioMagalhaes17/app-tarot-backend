@@ -1,6 +1,5 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { PaymentGateway } from './payment/payment-gateway';
-import { StripeGateway } from './payment/stripe-gateway';
 import { MercadoPagoGateway } from './payment/mercado-pago-gateway';
 import { EventGateway } from './events/event.gateway';
 import { PaymentIntentCreatedListener } from './events/listeners/payment-created';
@@ -39,7 +38,7 @@ import { ProcessAppointmentPaymentUseCase } from 'src/appointment/use-cases/proc
           processAppointmentPaymentUseCase,
         );
       },
-      inject: [forwardRef(() => ProcessAppointmentPaymentUseCase)],
+      inject: [ProcessAppointmentPaymentUseCase],
     },
     {
       provide: PaymentOrderFailedFactory,

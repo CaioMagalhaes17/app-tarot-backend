@@ -91,7 +91,7 @@ import { PaymentOrderRepository } from 'src/payment/database/payment-order.repos
       },
       inject: [
         AtendentServicesRepository,
-        forwardRef(() => CreatePaymentOrderUseCase),
+        CreatePaymentOrderUseCase,
         AppointmentRepository,
         AtendentRepository,
       ],

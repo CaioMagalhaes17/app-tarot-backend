@@ -27,17 +27,16 @@ export class MercadoPagoPaymentSucceededUseCase {
         id: paymentId,
       });
 
-      if (!mercadoPagoPayment || !mercadoPagoPayment.preference_id) {
+      if (!mercadoPagoPayment || !mercadoPagoPayment.id) {
         return left(
           new PaymentOrderNotFound('Pagamento não encontrado no Mercado Pago'),
         );
       }
 
       // 2. Buscar o PaymentOrder usando o preference_id como externalId
-      const paymentOrder =
-        await this.paymentOrderRepository.findByExternalId(
-          mercadoPagoPayment.preference_id,
-        );
+      const paymentOrder = await this.paymentOrderRepository.findByExternalId(
+        mercadoPagoPayment.external_reference,
+      );
 
       if (!paymentOrder) {
         return left(
@@ -95,4 +94,3 @@ export class MercadoPagoPaymentSucceededUseCase {
     }
   }
 }
-
