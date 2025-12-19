@@ -37,6 +37,25 @@ function makeAtendentService(
   });
 }
 
+function makeAtendentServiceWithId(
+  atendentId: string,
+  atendentServiceId: string,
+  serviceId?: string,
+  isActive: boolean = true,
+): AtendentServicesEntity {
+  const atendentService = makeAtendentService(atendentId, serviceId);
+  return AtendentServicesEntity.create(
+    {
+      description: atendentService.description,
+      price: atendentService.price,
+      service: atendentService.service,
+      atendent: atendentService.atendent,
+      isActive,
+    },
+    atendentServiceId,
+  );
+}
+
 describe('ProcessAppointmentPaymentUseCase', () => {
   let paymentOrderRepository: InMemoryPaymentOrderRepository;
   let appointmentRepository: InMemoryAppointmentRepository;
@@ -71,15 +90,20 @@ describe('ProcessAppointmentPaymentUseCase', () => {
     const atendentId = 'ATENDENT_ID';
     const userId = 'USER_ID';
     const serviceId = 'SERVICE_ID';
+    const atendentServiceId = 'ATENDENT_SERVICE_ID';
     const paymentOrderId = 'PAYMENT_ORDER_ID';
 
     const user = makeUser({}, userId);
     const atendent = makeAtendent({}, atendentId);
-    const atendentService = makeAtendentService(atendentId, serviceId);
+    const atendentServiceWithId = makeAtendentServiceWithId(
+      atendentId,
+      atendentServiceId,
+      serviceId,
+    );
 
     await userRepository.create(user);
     await atendentRepository.create(atendent);
-    await atendentServiceRepository.create(atendentService);
+    await atendentServiceRepository.create(atendentServiceWithId);
 
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -92,7 +116,7 @@ describe('ProcessAppointmentPaymentUseCase', () => {
         productType: 'appointment',
         userId,
         description: JSON.stringify({
-          atendentServiceId: serviceId,
+          atendentServiceId: atendentServiceId, // Usa o ID do AtendentService, não do Service
           userId,
           date: tomorrow.toISOString(),
           startTime: '10:00',
@@ -121,15 +145,20 @@ describe('ProcessAppointmentPaymentUseCase', () => {
     const atendentId = 'ATENDENT_ID';
     const userId = 'USER_ID';
     const serviceId = 'SERVICE_ID';
+    const atendentServiceId = 'ATENDENT_SERVICE_ID';
     const paymentOrderId = 'PAYMENT_ORDER_ID';
 
     const user = makeUser({}, userId);
     const atendent = makeAtendent({}, atendentId);
-    const atendentService = makeAtendentService(atendentId, serviceId);
+    const atendentServiceWithId = makeAtendentServiceWithId(
+      atendentId,
+      atendentServiceId,
+      serviceId,
+    );
 
     await userRepository.create(user);
     await atendentRepository.create(atendent);
-    await atendentServiceRepository.create(atendentService);
+    await atendentServiceRepository.create(atendentServiceWithId);
 
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -142,7 +171,7 @@ describe('ProcessAppointmentPaymentUseCase', () => {
         productType: 'appointment',
         userId,
         description: JSON.stringify({
-          atendentServiceId: serviceId,
+          atendentServiceId: atendentServiceId, // Usa o ID do AtendentService, não do Service
           userId,
           date: tomorrow.toISOString(),
           startTime: '10:00',
