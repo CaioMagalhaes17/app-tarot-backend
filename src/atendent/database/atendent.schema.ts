@@ -14,6 +14,9 @@ export class Atendent extends Document {
   @Prop({ type: Number, required: true })
   rating: number;
 
+  @Prop({ type: String, required: true })
+  name: string;
+
   @Prop({ type: mongoose.Schema.Types.Mixed })
   schedule: Schedule;
 }

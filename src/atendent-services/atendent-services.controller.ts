@@ -56,6 +56,7 @@ export class AtendentServicesController {
   @Delete('exclude/:id')
   async exclude(@Param('id') id: string) {
     const response = await this.excludeServiceUseCase.execute(id);
+    return response;
   }
 
   @UseGuards(JwtAuthGuard)
