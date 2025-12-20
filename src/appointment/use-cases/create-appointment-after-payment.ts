@@ -26,15 +26,11 @@ export class CreateAppointmentAfterPaymentUseCase {
 
   async execute(
     request: CreateAppointmentAfterPaymentRequest,
-  ): Promise<
-    Either<
-      ResourceNotFoundError | Error,
-      { appointmentId: string }
-    >
-  > {
+  ): Promise<Either<ResourceNotFoundError | Error, { appointmentId: string }>> {
     // 1. Valida se atendentService existe
-    const atendentService =
-      await this.atendentServiceRepository.findById(request.atendentServiceId);
+    const atendentService = await this.atendentServiceRepository.findById(
+      request.atendentServiceId,
+    );
     if (!atendentService) {
       return left(new ResourceNotFoundError('Serviço não encontrado'));
     }
@@ -91,7 +87,8 @@ export class CreateAppointmentAfterPaymentUseCase {
 
       // Verifica sobreposição de horários
       return (
-        (requestedStart >= appointmentStart && requestedStart < appointmentEnd) ||
+        (requestedStart >= appointmentStart &&
+          requestedStart < appointmentEnd) ||
         (requestedEnd > appointmentStart && requestedEnd <= appointmentEnd) ||
         (requestedStart <= appointmentStart && requestedEnd >= appointmentEnd)
       );
@@ -99,7 +96,9 @@ export class CreateAppointmentAfterPaymentUseCase {
 
     if (hasConflict) {
       return left(
-        new Error('Horário não está mais disponível. Foi ocupado por outro agendamento.'),
+        new Error(
+          'Horário não está mais disponível. Foi ocupado por outro agendamento.',
+        ),
       );
     }
 
@@ -118,14 +117,15 @@ export class CreateAppointmentAfterPaymentUseCase {
       const workStart = this.timeToMinutes(workRange.start);
       const workEnd = this.timeToMinutes(workRange.end);
       return (
-        requestedStartMinutes >= workStart &&
-        requestedEndMinutes <= workEnd
+        requestedStartMinutes >= workStart && requestedEndMinutes <= workEnd
       );
     });
 
     if (!isWithinSchedule) {
       return left(
-        new Error('Horário escolhido está fora do horário de trabalho do atendente'),
+        new Error(
+          'Horário escolhido está fora do horário de trabalho do atendente',
+        ),
       );
     }
 
@@ -139,9 +139,7 @@ export class CreateAppointmentAfterPaymentUseCase {
       status: 'scheduled',
       paymentOrderId: request.paymentOrderId,
     });
-
     await this.appointmentRepository.create(appointment);
-
     return right({ appointmentId: appointment.id.toString() });
   }
 
@@ -163,4 +161,3 @@ export class CreateAppointmentAfterPaymentUseCase {
     return weekdays[date.getDay()];
   }
 }
-

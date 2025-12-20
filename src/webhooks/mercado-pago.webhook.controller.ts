@@ -3,7 +3,9 @@ import { Request } from 'express';
 import { MercadoPagoEventFactory } from './factories/mercado-pago-event-factory';
 
 export interface MercadoPagoWebhookDTO {
-  type: string;
+  type?: string;
+  topic?: string;
+  resource?: string;
   data: {
     id: string;
   };
@@ -17,13 +19,14 @@ export class MercadoPagoWebhookController {
   @Post()
   async execute(@Req() req: Request, @Body() body: MercadoPagoWebhookDTO) {
     const event = body;
-    const useCase = this.mercadoPagoEventFactory.create(event.type);
+    const type = event.topic || event.type;
+    const paymentId = event.resource || event.data.id;
+    const useCase = this.mercadoPagoEventFactory.create(type);
     if (useCase) {
-      const response = await useCase.execute(event.data.id);
+      const response = await useCase.execute(paymentId);
       if (response.isLeft()) {
         console.log('LOGGER Mercado Pago Webhook Error:', response.value);
       }
     }
   }
 }
-

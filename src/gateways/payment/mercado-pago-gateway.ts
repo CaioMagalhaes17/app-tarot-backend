@@ -3,6 +3,7 @@ import { PaymentGateway, PaymentOrder } from './payment-gateway';
 import { Either, left, right } from 'src/core/Either';
 import { CreatePaymentOrderError } from './errors/CreatePaymentOrderError';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
+import { ProductCategory } from 'src/payment/payment-order.entity';
 
 @Injectable()
 export class MercadoPagoGateway extends PaymentGateway {
@@ -20,7 +21,7 @@ export class MercadoPagoGateway extends PaymentGateway {
   async createPaymentOrder(
     userId: string,
     amount: number,
-    description?: string,
+    productType?: ProductCategory,
   ): Promise<Either<CreatePaymentOrderError, PaymentOrder>> {
     try {
       const backUrls = {
@@ -28,12 +29,12 @@ export class MercadoPagoGateway extends PaymentGateway {
         failure: process.env.MERCADO_PAGO_FAILURE_URL || '',
         pending: process.env.MERCADO_PAGO_PENDING_URL || '',
       };
-
+      const externalId = `item_${Date.now()}_${userId}`;
       const preferenceData = {
         items: [
           {
-            id: `item_${Date.now()}_${userId}`,
-            title: description || 'Pagamento',
+            id: externalId,
+            title: this.formatProductType(productType),
             quantity: 1,
             unit_price: amount,
             currency_id: 'BRL',
@@ -44,9 +45,9 @@ export class MercadoPagoGateway extends PaymentGateway {
         notification_url: process.env.MERCADO_PAGO_WEBHOOK_URL || '',
         metadata: {
           userId,
+          externalId,
         },
       };
-
       const response = await this.preference.create({ body: preferenceData });
 
       if (!response.init_point || !response.id) {
@@ -61,7 +62,7 @@ export class MercadoPagoGateway extends PaymentGateway {
         amount,
         status: 'pending',
         createdAt: new Date(),
-        externalId: response.id,
+        externalId: externalId,
         checkoutUrl: response.init_point,
       });
     } catch (error: any) {
@@ -123,6 +124,12 @@ export class MercadoPagoGateway extends PaymentGateway {
         return 'cancelled';
       default:
         return 'pending';
+    }
+  }
+
+  private formatProductType(productType: ProductCategory) {
+    if (productType === 'appointment') {
+      return 'Consulta Taróloga';
     }
   }
 }

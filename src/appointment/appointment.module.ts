@@ -23,6 +23,7 @@ import { ProcessAppointmentPaymentUseCase } from './use-cases/process-appointmen
 import { CreateAppointmentAfterPaymentUseCase } from './use-cases/create-appointment-after-payment';
 import { IPaymentOrderRepository } from 'src/payment/database/payment-order.repository.interface';
 import { PaymentOrderRepository } from 'src/payment/database/payment-order.repository';
+import { PaymentOrderDatabaseModule } from 'src/payment/database/payment-oder.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { PaymentOrderRepository } from 'src/payment/database/payment-order.repos
     AtendentServicesDatabaseModule,
     forwardRef(() => PaymentOrderModule),
     AtendentDatabaseModule,
+    PaymentOrderDatabaseModule,
   ],
   controllers: [AppointmentController],
   providers: [

@@ -26,7 +26,6 @@ export class MercadoPagoPaymentSucceededUseCase {
       const mercadoPagoPayment = await this.payment.get({
         id: paymentId,
       });
-
       if (!mercadoPagoPayment || !mercadoPagoPayment.id) {
         return left(
           new PaymentOrderNotFound('Pagamento não encontrado no Mercado Pago'),
@@ -35,7 +34,7 @@ export class MercadoPagoPaymentSucceededUseCase {
 
       // 2. Buscar o PaymentOrder usando o preference_id como externalId
       const paymentOrder = await this.paymentOrderRepository.findByExternalId(
-        mercadoPagoPayment.external_reference,
+        mercadoPagoPayment.metadata.external_id,
       );
 
       if (!paymentOrder) {

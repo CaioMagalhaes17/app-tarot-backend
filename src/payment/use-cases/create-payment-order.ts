@@ -33,7 +33,7 @@ export class CreatePaymentOrderUseCase {
     const gatewayResponse = await this.paymentGateway.createPaymentOrder(
       userId,
       amount,
-      description,
+      productType,
     );
     if (gatewayResponse.isLeft()) {
       return left(

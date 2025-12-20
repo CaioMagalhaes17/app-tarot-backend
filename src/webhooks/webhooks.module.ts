@@ -11,13 +11,11 @@ import { GatewaysModule } from 'src/gateways/gateways.module';
 import { IPaymentOrderRepository } from 'src/payment/database/payment-order.repository.interface';
 import { PaymentOrderRepository } from 'src/payment/database/payment-order.repository';
 import { EventGateway } from 'src/gateways/events/event.gateway';
+import { PaymentOrderDatabaseModule } from 'src/payment/database/payment-oder.module';
 
 @Module({
-  imports: [PaymentOrderModule, GatewaysModule],
-  controllers: [
-    StripePaymentWebhookController,
-    MercadoPagoWebhookController,
-  ],
+  imports: [PaymentOrderModule, GatewaysModule, PaymentOrderDatabaseModule],
+  controllers: [StripePaymentWebhookController, MercadoPagoWebhookController],
   providers: [
     {
       provide: StripeEventFactory,

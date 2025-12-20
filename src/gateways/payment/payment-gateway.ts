@@ -1,5 +1,6 @@
 import { Either } from 'src/core/Either';
 import { CreatePaymentOrderError } from './errors/CreatePaymentOrderError';
+import { ProductCategory } from 'src/payment/payment-order.entity';
 
 export interface PaymentOrder {
   externalId: string;
@@ -13,7 +14,7 @@ export abstract class PaymentGateway {
   abstract createPaymentOrder(
     userId: string,
     amount: number,
-    description?: string,
+    productType?: ProductCategory,
   ): Promise<Either<CreatePaymentOrderError, PaymentOrder>>;
 
   abstract getPaymentStatus(
