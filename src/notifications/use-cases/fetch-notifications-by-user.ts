@@ -8,9 +8,7 @@ interface FetchNotificationsByUserRequest {
 }
 
 export class FetchNotificationsByUserUseCase {
-  constructor(
-    private notificationRepository: INotificationRepository,
-  ) {}
+  constructor(private notificationRepository: INotificationRepository) {}
 
   async execute(
     request: FetchNotificationsByUserRequest,
@@ -30,4 +28,3 @@ export class FetchNotificationsByUserUseCase {
     return right({ notifications });
   }
 }
-

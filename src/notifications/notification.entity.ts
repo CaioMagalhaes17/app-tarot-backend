@@ -1,7 +1,11 @@
 import { BaseEntity } from 'src/core/base.entity';
 import { UniqueEntityID } from 'src/core/unique-entity-id';
 
-export type NotificationType = 'payment_approved' | 'appointment_created' | 'appointment_cancelled' | 'general';
+export type NotificationType =
+  | 'payment_approved'
+  | 'appointment_created'
+  | 'appointment_cancelled'
+  | 'general';
 
 export interface NotificationEntityProps {
   userId: string;
@@ -60,4 +64,3 @@ export class NotificationEntity extends BaseEntity<NotificationEntityProps> {
     this.props.updatedAt = new Date();
   }
 }
-

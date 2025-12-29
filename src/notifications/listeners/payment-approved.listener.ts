@@ -4,7 +4,6 @@ import { DomainEvent } from 'src/gateways/events/event.gateway';
 import { CreateNotificationUseCase } from '../use-cases/create-notification';
 import { PaymentOrderEntity } from 'src/payment/payment-order.entity';
 import { INotificationRepository } from '../database/notification.repository.interface';
-import { NotificationRepository } from '../database/notification.repository';
 import { NotificationGateway } from '../gateways/notification.gateway';
 
 @Injectable()
@@ -53,4 +52,3 @@ export class PaymentApprovedListener {
     }
   }
 }
-

@@ -6,10 +6,16 @@ export class NotificationMapper
   implements BaseMapperInterface<Notification, NotificationEntity> {
   toDomain(row: any): NotificationEntity {
     if (!row) return;
-    const { _id, ...rest } = row;
+    const { _id } = row;
     return NotificationEntity.create(
       {
-        ...rest,
+        createdAt: row.createdAt,
+        isRead: row.isRead,
+        message: row.message,
+        title: row.title,
+        type: row.type,
+        metadata: row.metadata,
+        updatedAt: row.updatedAt,
         userId: row.userId,
       },
       _id.toString(),
@@ -36,4 +42,3 @@ export class NotificationMapper
     };
   }
 }
-

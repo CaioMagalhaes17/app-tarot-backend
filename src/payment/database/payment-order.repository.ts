@@ -29,13 +29,13 @@ export class PaymentOrderRepository
 
   async findAll(): Promise<PaymentOrderEntity[]> {
     return this.mapper.toDomainArray(
-      await this.model.find().populate('userId').lean().exec(),
+      await this.model.find().populate('userId').exec(),
     );
   }
 
   async findByParam<ParamType>(param: ParamType) {
     return this.mapper.toDomainArray(
-      await this.model.find(param).populate('userId').lean().exec(),
+      await this.model.find(param).populate('userId').exec(),
     );
   }
 
@@ -56,7 +56,6 @@ export class PaymentOrderRepository
           userId,
         })
         .populate('userId')
-        .lean()
         .exec(),
     );
   }

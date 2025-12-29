@@ -17,11 +17,7 @@ export class NotificationRepository
 
   async findByUserId(userId: string): Promise<NotificationEntity[]> {
     return this.mapper.toDomainArray(
-      await this.model
-        .find({ userId })
-        .sort({ createdAt: -1 })
-        .lean()
-        .exec(),
+      await this.model.find({ userId }).sort({ createdAt: -1 }).exec(),
     );
   }
 
@@ -30,7 +26,6 @@ export class NotificationRepository
       await this.model
         .find({ userId, isRead: false })
         .sort({ createdAt: -1 })
-        .lean()
         .exec(),
     );
   }
@@ -55,4 +50,3 @@ export class NotificationRepository
     return this.mapper.toDomain(result);
   }
 }
-

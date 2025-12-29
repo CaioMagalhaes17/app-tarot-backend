@@ -37,7 +37,6 @@ export class NotificationController {
     if (response.isLeft()) {
       throw new BadRequestException(response.value.message);
     }
-
     return {
       notifications: NotificationPresenter.toHttpArray(
         response.value.notifications,
@@ -80,4 +79,3 @@ export class NotificationController {
     return { message: 'Todas as notificações foram marcadas como lidas' };
   }
 }
-
