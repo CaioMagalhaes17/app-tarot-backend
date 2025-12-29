@@ -32,6 +32,7 @@ export class UserMapper implements BaseMapperInterface<User, UserEntity> {
       permission: domain.permission,
       profileImg: domain.profileImg,
       isVerified: domain.isVerified,
+      googleId: domain.googleId,
     };
   }
 }

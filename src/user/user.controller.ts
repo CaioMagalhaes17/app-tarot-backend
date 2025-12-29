@@ -19,6 +19,8 @@ import { JwtAuthGuard } from 'src/infra/auth/guards/jwt.guard';
 import { GetUserUseCase } from './use-cases/get-user-use-case';
 import { UserNotFound } from './errors/UserNotFound';
 import { UserPresenter } from './user.presenter';
+import { GoogleLoginDto } from './dto/google';
+import { GoogleLoginUseCase } from './use-cases/login-google';
 
 @Controller()
 export class UserController {
@@ -28,6 +30,7 @@ export class UserController {
     private sendEmailVerificationUseCase: SendEmailVerificationUseCase,
     private verifyTokenUseCase: VerifyTokenUseCase,
     private getUserUseCase: GetUserUseCase,
+    private googleLoginUseCase: GoogleLoginUseCase,
   ) {}
 
   @Post('/user/login')
@@ -134,5 +137,19 @@ export class UserController {
       false,
       response.value.atendent,
     );
+  }
+
+  @Post('/user/login/google')
+  async googleLogin(@Body() googleLoginDto: GoogleLoginDto) {
+    const result = await this.googleLoginUseCase.execute({
+      idToken: googleLoginDto.idToken,
+    });
+
+    if (result.isLeft()) {
+      throw new BadRequestException(result.value.message);
+    }
+    return {
+      accessToken: result.value.accessToken,
+    };
   }
 }

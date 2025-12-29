@@ -15,4 +15,8 @@ export class UserRepository extends BaseInfraRepository<User, UserEntity> {
   async fetchUserByLogin(login: string): Promise<UserEntity> {
     return this.mapper.toDomain(await this.model.findOne({ login }).exec());
   }
+
+  async findByGoogleId(googleId: string): Promise<UserEntity | null> {
+    return this.mapper.toDomain(await this.model.findOne({ googleId }).exec());
+  }
 }

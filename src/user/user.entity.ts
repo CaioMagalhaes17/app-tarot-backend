@@ -5,21 +5,46 @@ export type UserProps = {
   createdAt?: Date;
   updatedAt?: Date;
   login: string;
-  password: string;
+  password?: string;
   name: string;
   isAtendent: boolean;
   permission: string;
   profileImg: string;
   isVerified: boolean;
+  googleId?: string;
 };
 
 export class UserEntity extends BaseEntity<UserProps> {
+  static createFromGoogle(
+    googleId: string,
+    name: string,
+    email: string,
+    id?: string,
+  ): UserEntity {
+    return new UserEntity(
+      {
+        isAtendent: false,
+        isVerified: true,
+        login: email,
+        name,
+        permission: 'user',
+        profileImg: '',
+        googleId,
+      },
+      new UniqueEntityID(id),
+    );
+  }
+
   static create(props: UserProps, id?: string) {
     return new UserEntity(props, new UniqueEntityID(id));
   }
 
   get createdAt() {
     return this.props.createdAt;
+  }
+
+  get googleId() {
+    return this.props.googleId;
   }
 
   get updatedAt() {

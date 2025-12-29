@@ -2,6 +2,12 @@ import { IUserRepository } from '../database/user.repository.interface';
 import { UserEntity } from '../user.entity';
 
 export class InMemoryUserRepository implements IUserRepository {
+  findByGoogleId(googleId: string): Promise<UserEntity | null> {
+    throw new Error('Method not implemented.');
+  }
+  fetchUserByLogin(login: string): Promise<UserEntity | null> {
+    throw new Error('Method not implemented.');
+  }
   user: UserEntity[] = [];
 
   async create(data: UserEntity): Promise<{ id: string }> {

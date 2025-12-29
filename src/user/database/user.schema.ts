@@ -9,7 +9,7 @@ export class User extends Document {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   password: string;
 
   @Prop({ required: true })
@@ -23,6 +23,9 @@ export class User extends Document {
 
   @Prop()
   profileImg: string;
+
+  @Prop({ required: false, unique: true })
+  googleId: string | null;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

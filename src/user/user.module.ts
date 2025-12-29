@@ -18,6 +18,11 @@ import { GetUserUseCase } from './use-cases/get-user-use-case';
 import { IAtendentRepository } from 'src/atendent/database/atendent.repository.interface';
 import { AtendentRepository } from 'src/atendent/database/atendent.repository';
 import { AtendentDatabaseModule } from 'src/atendent/database/atendent.database.module';
+import { GoogleAuthService } from './google-auth.service';
+import {
+  GoogleLoginUseCase,
+  IGoogleAuthService,
+} from './use-cases/login-google';
 
 @Module({
   imports: [
@@ -30,6 +35,22 @@ import { AtendentDatabaseModule } from 'src/atendent/database/atendent.database.
   ],
   controllers: [UserController],
   providers: [
+    GoogleAuthService,
+    {
+      provide: GoogleLoginUseCase,
+      useFactory: (
+        userRepository: IUserRepository,
+        encrypterGateway: EncrypterGateway,
+        googleAuthService: IGoogleAuthService,
+      ) => {
+        return new GoogleLoginUseCase(
+          userRepository,
+          encrypterGateway,
+          googleAuthService,
+        );
+      },
+      inject: [UserRepository, EncrypterGateway, GoogleAuthService],
+    },
     {
       provide: GetUserUseCase,
       useFactory: (
