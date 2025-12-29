@@ -1,7 +1,7 @@
 import { BaseInfraRepository } from 'src/core/base.repository';
 import { Model } from 'mongoose';
 import { Notification } from './notification.schema';
-import { NotificationEntity } from '../notification.entity';
+import { NotificationEntity, NotificationType } from '../notification.entity';
 import { NotificationMapper } from './notification.mapper';
 import { INotificationRepository } from './notification.repository.interface';
 
@@ -37,6 +37,22 @@ export class NotificationRepository
 
   async markAllAsReadByUserId(userId: string): Promise<void> {
     await this.model.updateMany({ userId, isRead: false }, { isRead: true });
+  }
+
+  async findByPaymentOrderId(
+    paymentOrderId: string,
+    type: NotificationType,
+  ): Promise<NotificationEntity | null> {
+    const result = await this.model
+      .findOne({
+        type,
+        'metadata.paymentOrderId': paymentOrderId,
+      })
+      .lean()
+      .exec();
+
+    if (!result) return null;
+    return this.mapper.toDomain(result);
   }
 }
 

@@ -8,11 +8,16 @@ import { MarkAllNotificationsAsReadUseCase } from './use-cases/mark-all-notifica
 import { PaymentApprovedListener } from './listeners/payment-approved.listener';
 import { INotificationRepository } from './database/notification.repository.interface';
 import { NotificationRepository } from './database/notification.repository';
+import { NotificationGateway } from './gateways/notification.gateway';
+import { WsJwtGuard } from './guards/ws-jwt.guard';
+import { AuthModule } from 'src/infra/auth/auth.module';
 
 @Module({
-  imports: [NotificationDatabaseModule],
+  imports: [NotificationDatabaseModule, AuthModule],
   controllers: [NotificationController],
   providers: [
+    NotificationGateway,
+    WsJwtGuard,
     {
       provide: CreateNotificationUseCase,
       useFactory: (
@@ -51,10 +56,22 @@ import { NotificationRepository } from './database/notification.repository';
     },
     {
       provide: PaymentApprovedListener,
-      useFactory: (createNotificationUseCase: CreateNotificationUseCase) => {
-        return new PaymentApprovedListener(createNotificationUseCase);
+      useFactory: (
+        createNotificationUseCase: CreateNotificationUseCase,
+        notificationRepository: INotificationRepository,
+        notificationGateway: NotificationGateway,
+      ) => {
+        return new PaymentApprovedListener(
+          createNotificationUseCase,
+          notificationRepository,
+          notificationGateway,
+        );
       },
-      inject: [CreateNotificationUseCase],
+      inject: [
+        CreateNotificationUseCase,
+        NotificationRepository,
+        NotificationGateway,
+      ],
     },
   ],
   exports: [CreateNotificationUseCase, NotificationDatabaseModule],

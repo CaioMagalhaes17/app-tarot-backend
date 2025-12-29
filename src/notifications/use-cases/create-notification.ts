@@ -17,7 +17,7 @@ export class CreateNotificationUseCase {
 
   async execute(
     request: CreateNotificationRequest,
-  ): Promise<Either<Error, { id: string }>> {
+  ): Promise<Either<Error, { id: string; notification: NotificationEntity }>> {
     const notification = NotificationEntity.create({
       userId: request.userId,
       type: request.type,
@@ -29,8 +29,11 @@ export class CreateNotificationUseCase {
     });
 
     const result = await this.notificationRepository.create(notification);
+    const createdNotification = await this.notificationRepository.findById(
+      result.id,
+    );
 
-    return right(result);
+    return right({ id: result.id, notification: createdNotification });
   }
 }
 
