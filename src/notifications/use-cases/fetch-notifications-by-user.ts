@@ -1,4 +1,3 @@
-import { Injectable } from '@nestjs/common';
 import { Either, right } from 'src/core/Either';
 import { INotificationRepository } from '../database/notification.repository.interface';
 import { NotificationEntity } from '../notification.entity';
@@ -8,7 +7,6 @@ interface FetchNotificationsByUserRequest {
   unreadOnly?: boolean;
 }
 
-@Injectable()
 export class FetchNotificationsByUserUseCase {
   constructor(
     private notificationRepository: INotificationRepository,
