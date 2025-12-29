@@ -17,6 +17,7 @@ import { GatewaysModule } from './gateways/gateways.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppointmentModule } from './appointment/appointment.module';
 import { AtendentServicesModule } from './atendent-services/atendent-services.module';
+import { NotificationModule } from './notifications/notification.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { AtendentServicesModule } from './atendent-services/atendent-services.mo
     WebhooksModule,
     AppointmentModule,
     AtendentServicesModule,
+    NotificationModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
