@@ -20,4 +20,3 @@ import { PaymentApprovedListener } from './listeners/payment-approved.listener';
   exports: [CreateNotificationUseCase, NotificationDatabaseModule],
 })
 export class NotificationModule {}
-

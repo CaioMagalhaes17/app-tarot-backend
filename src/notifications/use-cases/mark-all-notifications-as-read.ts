@@ -8,9 +8,7 @@ interface MarkAllNotificationsAsReadRequest {
 
 @Injectable()
 export class MarkAllNotificationsAsReadUseCase {
-  constructor(
-    private notificationRepository: INotificationRepository,
-  ) {}
+  constructor(private notificationRepository: INotificationRepository) {}
 
   async execute(
     request: MarkAllNotificationsAsReadRequest,
@@ -20,4 +18,3 @@ export class MarkAllNotificationsAsReadUseCase {
     return right(null);
   }
 }
-
