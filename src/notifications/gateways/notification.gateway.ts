@@ -19,8 +19,7 @@ import { NotificationPresenter } from '../notification.presenter';
 })
 @UseGuards(WsJwtGuard)
 export class NotificationGateway
-  implements OnGatewayConnection, OnGatewayDisconnect
-{
+  implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
@@ -65,4 +64,3 @@ export class NotificationGateway
     });
   }
 }
-

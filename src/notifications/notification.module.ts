@@ -20,36 +20,28 @@ import { AuthModule } from 'src/infra/auth/auth.module';
     WsJwtGuard,
     {
       provide: CreateNotificationUseCase,
-      useFactory: (
-        notificationRepository: INotificationRepository,
-      ) => {
+      useFactory: (notificationRepository: INotificationRepository) => {
         return new CreateNotificationUseCase(notificationRepository);
       },
       inject: [NotificationRepository],
     },
     {
       provide: FetchNotificationsByUserUseCase,
-      useFactory: (
-        notificationRepository: INotificationRepository,
-      ) => {
+      useFactory: (notificationRepository: INotificationRepository) => {
         return new FetchNotificationsByUserUseCase(notificationRepository);
       },
       inject: [NotificationRepository],
     },
     {
       provide: MarkNotificationAsReadUseCase,
-      useFactory: (
-        notificationRepository: INotificationRepository,
-      ) => {
+      useFactory: (notificationRepository: INotificationRepository) => {
         return new MarkNotificationAsReadUseCase(notificationRepository);
       },
       inject: [NotificationRepository],
     },
     {
       provide: MarkAllNotificationsAsReadUseCase,
-      useFactory: (
-        notificationRepository: INotificationRepository,
-      ) => {
+      useFactory: (notificationRepository: INotificationRepository) => {
         return new MarkAllNotificationsAsReadUseCase(notificationRepository);
       },
       inject: [NotificationRepository],
