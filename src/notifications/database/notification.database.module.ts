@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
 import { getModelToken, MongooseModule } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { Notification, NotificationSchema } from './notification.schema';
 import { NotificationRepository } from './notification.repository';
 import { NotificationMapper } from './notification.mapper';
-import { INotificationRepository } from './notification.repository.interface';
+import { Model } from 'mongoose';
 
 @Module({
   imports: [
@@ -16,20 +15,12 @@ import { INotificationRepository } from './notification.repository.interface';
     NotificationMapper,
     {
       provide: NotificationRepository,
-      useFactory: (
-        model: Model<Notification>,
-        mapper: NotificationMapper,
-      ) => {
+      useFactory: (model: Model<Notification>, mapper: NotificationMapper) => {
         return new NotificationRepository(model, mapper);
       },
       inject: [getModelToken(Notification.name), NotificationMapper],
     },
-    {
-      provide: INotificationRepository,
-      useExisting: NotificationRepository,
-    },
   ],
-  exports: [NotificationRepository, INotificationRepository],
+  exports: [NotificationRepository],
 })
 export class NotificationDatabaseModule {}
-

@@ -60,4 +60,3 @@ import { NotificationRepository } from './database/notification.repository';
   exports: [CreateNotificationUseCase, NotificationDatabaseModule],
 })
 export class NotificationModule {}
-
