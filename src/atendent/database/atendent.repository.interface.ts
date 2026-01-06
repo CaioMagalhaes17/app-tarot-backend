@@ -8,6 +8,7 @@ export interface IAtendentRepository
     page: number,
     limit: number,
     search?: string,
+    service?: string,
   ): Promise<{
     data: AtendentEntity[];
     total: number;

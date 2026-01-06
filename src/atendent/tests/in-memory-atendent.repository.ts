@@ -31,6 +31,7 @@ export class InMemoryAtendentRepository implements IAtendentRepository {
     page: number,
     limit: number,
     search?: string,
+    service?: string,
   ): Promise<{
     data: AtendentEntity[];
     total: number;
@@ -44,6 +45,10 @@ export class InMemoryAtendentRepository implements IAtendentRepository {
         atendent.name.toLowerCase().includes(search.toLowerCase()),
       );
     }
+
+    // Nota: Filtro por serviço não é implementado no repositório in-memory
+    // pois requer acesso a atendent-services, que não está disponível aqui
+    // Para testes completos, use o repositório real
 
     const skip = (page - 1) * limit;
     const data = filtered.slice(skip, skip + limit);

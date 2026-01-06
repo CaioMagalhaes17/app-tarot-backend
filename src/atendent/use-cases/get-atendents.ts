@@ -13,6 +13,7 @@ export class GetAtendentsUseCases {
       paginationObj.page,
       paginationObj.limit,
       params.search,
+      params.service,
     );
     return result;
   }
